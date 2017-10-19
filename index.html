@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Projekt. Proces ETL</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div id="message"></div>
+    <script>
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'get-item-page',
+                itemId: '39820673'
+                //reviewsPageNumber: 0
+            },
+            success: function (response) {
+                document.getElementById('message').textContent = response.message;
+            }
+        });
+    </script>
+</body>
+
+</html>
