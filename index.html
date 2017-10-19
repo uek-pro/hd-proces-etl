@@ -13,22 +13,85 @@
 </head>
 
 <body>
-    <div id="message"></div>
+    <input id="idValue" type="number" value="39820673" />
+    <input type="button" value="Pokaż" />
+    <input type="button" value="ETL" />
+    <!-- <input type="button" value="E" />
+    <input type="button" value="T" />
+    <input type="button" value="L" /> -->
+    <p id="message"></p>
+    <div id="result"></div>
+    <p id="reviewsCount"></p>
+    <div id="reviewsResult"></div>
     <script>
-        $.ajax({
-            url: 'http://localhost/web/hd-proces-etl/app_service.php',
-            method: 'post',
-            data: {
-                protocol: 'get-item-page',
-                itemId: '39820673'
-                //reviewsPageNumber: 0
-            },
-            success: function (response) {
-                site = new DOMParser().parseFromString(response.result, "text/html");
-                const product = ProductParser.parseProduct(site);
-                document.getElementById('message').innerHTML = product.textValue();
+        var reviewsCount = 0;
+        var pageCount = 0;
+        var id = 0;
+
+        document.querySelector('input[value=Pokaż]').addEventListener('click', function () {
+
+            id = document.getElementById('idValue').value;
+
+            $.ajax({
+                url: 'http://localhost/web/hd-proces-etl/app_service.php',
+                method: 'post',
+                data: {
+                    protocol: 'get-item-page',
+                    itemId: id//'39820673'
+                    //reviewsPageNumber: 0
+                },
+                success: function (response) {
+                    site = new DOMParser().parseFromString(response.result, "text/html");
+                    const product = ProductParser.parseProduct(site);
+                    document.getElementById('message').textContent = response.message;
+                    document.getElementById('result').innerHTML = product.textValue();
+                    reviewsCount = ProductParser.parseReviewCount(site);
+                    document.getElementById('reviewsCount').textContent = 'Liczba opinii: ' + reviewsCount;
+                }
+            });
+        });
+
+        document.querySelector('input[value=ETL]').addEventListener('click', function () {
+
+            if (reviewsCount > 0) {
+
+                pageCount = Math.floor(reviewsCount / 10) + 1;
+                console.log("> Liczba stron opinii", pageCount);
+
+                getReviews(id, 1);
             }
         });
+
+        function getReviews(pageId, reviewsPage) {
+
+            if (reviewsPage > pageCount) return;
+
+            console.log("Będe pobierał " + reviewsPage + " stronę.");
+
+            var reviewsDiv = document.getElementById('reviewsResult');
+
+            $.ajax({
+                url: 'http://localhost/web/hd-proces-etl/app_service.php',
+                method: 'post',
+                data: {
+                    protocol: 'get-item-page',
+                    itemId: pageId,
+                    reviewsPageNumber: reviewsPage
+                },
+                success: function (response) {
+                    site = new DOMParser().parseFromString(response.result, "text/html");
+                    var reviews = site.querySelectorAll('ol.product-reviews > li.review-box');
+                    for (var i = 0, k = reviews.length; i < k; i++) {
+                        var review = ReviewsParser.parseReview(reviews[i]);
+                        $(reviewsDiv).append(review.textValue((reviewsPage - 1) * 10 + i + 1));
+                    }
+
+                    console.log("Strona " + reviewsPage + " została przekształcona.");
+
+                    getReviews(pageId, reviewsPage + 1);
+                }
+            });
+        }
     </script>
 </body>
 
