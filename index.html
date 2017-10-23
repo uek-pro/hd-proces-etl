@@ -6,19 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Projekt. Proces ETL</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
 </head>
 
 <body>
     <input id="idValue" type="number" value="39820673" />
     <input type="button" value="Pokaż" />
-    <input type="button" value="ETL" />
-    <!-- <input type="button" value="E" />
-    <input type="button" value="T" />
-    <input type="button" value="L" /> -->
+    <input class="process-button" type="button" value="ETL" />
+    <input class="process-button" type="button" value="E" />
+    <input class="process-button" type="button" value="T" />
+    <input class="process-button" type="button" value="L" />
     <p id="message"></p>
     <div id="result"></div>
     <p id="reviewsCount"></p>
@@ -47,11 +45,16 @@
                     document.getElementById('result').innerHTML = product.textValue();
                     reviewsCount = ProductParser.parseReviewCount(site);
                     document.getElementById('reviewsCount').textContent = 'Liczba opinii: ' + reviewsCount;
+
+                    updateUI(ProductStatus.FOUNDED);
                 }
             });
         });
 
-        document.querySelector('input[value=ETL]').addEventListener('click', function () {
+        var processBtns = document.querySelectorAll("input.process-button");
+
+        // zdarzenie klinięcia w przycisk ETL
+        processBtns[0].addEventListener('click', function () {
 
             if (reviewsCount > 0) {
 
@@ -60,6 +63,27 @@
 
                 getReviews(id, 1);
             }
+        });
+
+        // zdarzenie klinięcia w przycisk Extract
+        processBtns[1].addEventListener('click', function () {
+
+            // TODO: implementacja Extract + info o liczbie pobranych plików
+            updateUI(ProductStatus.EXTRACTED);
+        });
+
+        // zdarzenie klinięcia w przycisk Transform
+        processBtns[2].addEventListener('click', function () {
+
+            // TODO: implementacja Transform
+            updateUI(ProductStatus.TRANSFORMED);
+        });
+
+        // zdarzenie klinięcia w przycisk Load
+        processBtns[3].addEventListener('click', function () {
+
+            // TODO: implementacja Load + info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
+            updateUI(ProductStatus.LOADED);
         });
 
         function getReviews(pageId, reviewsPage) {
@@ -91,6 +115,40 @@
                     getReviews(pageId, reviewsPage + 1);
                 }
             });
+        }
+
+        const ProductStatus = {
+            NONE: 0,
+            FOUNDED: 1,
+            EXTRACTED: 2,
+            TRANSFORMED: 3,
+            LOADED: 4
+        }
+        
+        updateUI(ProductStatus.NONE);
+
+        function updateUI(state) {
+            if (state == ProductStatus.NONE) {
+                processBtns[0].disabled = true;
+                processBtns[1].disabled = true;
+                processBtns[2].disabled = true;
+                processBtns[3].disabled = true;
+            } else if (state == ProductStatus.FOUNDED || state == ProductStatus.LOADED) {
+                processBtns[0].disabled = false;
+                processBtns[1].disabled = false;
+                processBtns[2].disabled = true;
+                processBtns[3].disabled = true;
+            } else if (state == ProductStatus.EXTRACTED) {
+                processBtns[0].disabled = true;
+                processBtns[1].disabled = true;
+                processBtns[2].disabled = false;
+                processBtns[3].disabled = true;
+            } else if (state == ProductStatus.TRANSFORMED) {
+                processBtns[0].disabled = true;
+                processBtns[1].disabled = true;
+                processBtns[2].disabled = true;
+                processBtns[3].disabled = false;
+            }
         }
     </script>
 </body>

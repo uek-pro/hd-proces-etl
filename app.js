@@ -1,10 +1,10 @@
 class Product {
-    constructor(id, type, brand, model, additionalRemarks) {
+    constructor(id, type, brand, model, remarks) {
         this.id = id;
         this.type = type;
         this.brand = brand;
         this.model = model;
-        this.additionalRemarks = additionalRemarks;
+        this.remarks = remarks;
     }
 
     textValue() {
@@ -12,7 +12,7 @@ class Product {
             "<tr><td>Rodzaj urządzenia</td><td>" + this.type + "</td></tr>" +
             "<tr><td>Marka</td><td>" + this.brand + "</td></tr>" +
             "<tr><td>Model</td><td>" + this.model + "</td></tr>" +
-            "<tr><td>Dodatkowe uwagi</td><td>" + this.additionalRemarks + "</td></tr></table>"
+            "<tr><td>Dodatkowe uwagi</td><td>" + this.remarks + "</td></tr></table>"
         );
     }
 }
@@ -29,10 +29,10 @@ const ProductParser = {
         var modelElement = doc.querySelector("div.product-content .product-name");
         var model = modelElement != null ? modelElement.textContent : "";
 
-        var additionalRemarksElement = doc.querySelector("div.product-content .ProductSublineTags");
-        var additionalRemarks = additionalRemarksElement != null ? additionalRemarksElement.textContent : "";
+        var remarksElement = doc.querySelector("div.product-content .ProductSublineTags");
+        var remarks = remarksElement != null ? remarksElement.textContent : "";
 
-        return new Product(this.parseProductId(doc), type, brand, model, additionalRemarks);
+        return new Product(this.parseProductId(doc), type, brand, model, remarks);
     },
     parseReviewCount: function (doc) {
         var reviewsCount = doc.querySelector("span[itemprop=reviewCount]");
@@ -50,7 +50,7 @@ const ProductParser = {
 }
 
 class Review {
-    constructor(id, pros, cons, summary, starsCount, author, date, isRecommended, usefulReviewsCount, uselessReviewsCount) {
+    constructor(id, pros, cons, summary, starsCount, author, date, isRecommended, voteYesCount, voteNoCount) {
         this.id = id;
         this.pros = pros;
         this.cons = cons;
@@ -59,8 +59,8 @@ class Review {
         this.author = author;
         this.date = date;
         this.isRecommended = isRecommended;
-        this.usefulReviewsCount = usefulReviewsCount;
-        this.uselessReviewsCount = uselessReviewsCount;
+        this.voteYesCount = voteYesCount;
+        this.voteNoCount = voteNoCount;
     }
 
     textValue(lp) {
@@ -72,9 +72,9 @@ class Review {
             "<tr><td>Liczba gwiazdek</td><td>" + this.starsCount + "</td></tr>" +
             "<tr><td>Autor opinii</td><td>" + this.author + "</td></tr>" +
             "<tr><td>Data wystawienia opinii</td><td>" + this.date + "</td></tr>" +
-            "<tr><td>Czy poleca</td><td>" + this.isRecommended + "</td></tr>" +
-            "<tr><td>Ocena opinii jako przydatna</td><td>" + this.usefulReviewsCount + "</td></tr>" +
-            "<tr><td>Ocena opinii jako nieprzydatna</td><td>" + this.uselessReviewsCount + "</td></tr></table><hr/>"
+            "<tr><td>Czy poleca</td><td>" + (this.isRecommended ? 'Tak' : 'Nie') + "</td></tr>" +
+            "<tr><td>Ocena opinii jako przydatna</td><td>" + this.voteYesCount + "</td></tr>" +
+            "<tr><td>Ocena opinii jako nieprzydatna</td><td>" + this.voteNoCount + "</td></tr></table><hr/>"
         );
     }
 }
@@ -91,15 +91,23 @@ const ReviewsParser = {
         for (var i = 0, k = consArray.length; i < k; i++) {
             cons += consArray[i].textContent.trim() + ";";
         }
+
+        var isRecommended = null;
+        var recommendationElement = review.querySelector('div.reviewer-recommendation em') != null ? review.querySelector('div.reviewer-recommendation em') : "";
+        if (recommendationElement == "Polecam")
+            isRecommended = true;
+        else
+            isRecommended = false;
+
         return new Review(
             review.querySelector('button.vote-yes').attributes['data-review-id'].textContent,
             pros,
             cons,
-            "",//review.querySelector('p.product-review-body').textContent, //tmp
+            "",//review.querySelector('p.product-review-body').textContent, //FIXME: wstawić tekst opinii
             review.querySelector('span.review-score-count').textContent.split('/')[0],
             review.querySelector('div.reviewer-name-line').textContent.trim(),
             review.querySelector('span.review-time > time').attributes['datetime'].textContent,
-            review.querySelector('div.reviewer-recommendation') != null ? "Tak" : "Nie",
+            isRecommended,
             review.querySelector('button.vote-yes').textContent,
             review.querySelector('button.vote-no').textContent
         );
