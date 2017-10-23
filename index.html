@@ -7,7 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Projekt. Proces ETL</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="app.js"></script>
+
+    <script src="classes.js"></script>
+    <script src="parsers.js"></script>
+
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
 </head>
 
 <body>
@@ -21,136 +27,8 @@
     <div id="result"></div>
     <p id="reviewsCount"></p>
     <div id="reviewsResult"></div>
-    <script>
-        var reviewsCount = 0;
-        var pageCount = 0;
-        var id = 0;
-
-        document.querySelector('input[value=Pokaż]').addEventListener('click', function () {
-
-            id = document.getElementById('idValue').value;
-
-            $.ajax({
-                url: 'http://localhost/web/hd-proces-etl/app_service.php',
-                method: 'post',
-                data: {
-                    protocol: 'get-item-page',
-                    itemId: id//'39820673'
-                    //reviewsPageNumber: 0
-                },
-                success: function (response) {
-                    site = new DOMParser().parseFromString(response.result, "text/html");
-                    const product = ProductParser.parseProduct(site);
-                    document.getElementById('message').textContent = response.message;
-                    document.getElementById('result').innerHTML = product.textValue();
-                    reviewsCount = ProductParser.parseReviewCount(site);
-                    document.getElementById('reviewsCount').textContent = 'Liczba opinii: ' + reviewsCount;
-
-                    updateUI(ProductStatus.FOUNDED);
-                }
-            });
-        });
-
-        var processBtns = document.querySelectorAll("input.process-button");
-
-        // zdarzenie klinięcia w przycisk ETL
-        processBtns[0].addEventListener('click', function () {
-
-            if (reviewsCount > 0) {
-
-                pageCount = Math.floor(reviewsCount / 10) + 1;
-                console.log("> Liczba stron opinii", pageCount);
-
-                getReviews(id, 1);
-            }
-        });
-
-        // zdarzenie klinięcia w przycisk Extract
-        processBtns[1].addEventListener('click', function () {
-
-            // TODO: implementacja Extract + info o liczbie pobranych plików
-            updateUI(ProductStatus.EXTRACTED);
-        });
-
-        // zdarzenie klinięcia w przycisk Transform
-        processBtns[2].addEventListener('click', function () {
-
-            // TODO: implementacja Transform
-            updateUI(ProductStatus.TRANSFORMED);
-        });
-
-        // zdarzenie klinięcia w przycisk Load
-        processBtns[3].addEventListener('click', function () {
-
-            // TODO: implementacja Load + info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
-            updateUI(ProductStatus.LOADED);
-        });
-
-        function getReviews(pageId, reviewsPage) {
-
-            if (reviewsPage > pageCount) return;
-
-            console.log("Będe pobierał " + reviewsPage + " stronę.");
-
-            var reviewsDiv = document.getElementById('reviewsResult');
-
-            $.ajax({
-                url: 'http://localhost/web/hd-proces-etl/app_service.php',
-                method: 'post',
-                data: {
-                    protocol: 'get-item-page',
-                    itemId: pageId,
-                    reviewsPageNumber: reviewsPage
-                },
-                success: function (response) {
-                    site = new DOMParser().parseFromString(response.result, "text/html");
-                    var reviews = site.querySelectorAll('ol.product-reviews > li.review-box');
-                    for (var i = 0, k = reviews.length; i < k; i++) {
-                        var review = ReviewsParser.parseReview(reviews[i]);
-                        $(reviewsDiv).append(review.textValue((reviewsPage - 1) * 10 + i + 1));
-                    }
-
-                    console.log("Strona " + reviewsPage + " została przekształcona.");
-
-                    getReviews(pageId, reviewsPage + 1);
-                }
-            });
-        }
-
-        const ProductStatus = {
-            NONE: 0,
-            FOUNDED: 1,
-            EXTRACTED: 2,
-            TRANSFORMED: 3,
-            LOADED: 4
-        }
-        
-        updateUI(ProductStatus.NONE);
-
-        function updateUI(state) {
-            if (state == ProductStatus.NONE) {
-                processBtns[0].disabled = true;
-                processBtns[1].disabled = true;
-                processBtns[2].disabled = true;
-                processBtns[3].disabled = true;
-            } else if (state == ProductStatus.FOUNDED || state == ProductStatus.LOADED) {
-                processBtns[0].disabled = false;
-                processBtns[1].disabled = false;
-                processBtns[2].disabled = true;
-                processBtns[3].disabled = true;
-            } else if (state == ProductStatus.EXTRACTED) {
-                processBtns[0].disabled = true;
-                processBtns[1].disabled = true;
-                processBtns[2].disabled = false;
-                processBtns[3].disabled = true;
-            } else if (state == ProductStatus.TRANSFORMED) {
-                processBtns[0].disabled = true;
-                processBtns[1].disabled = true;
-                processBtns[2].disabled = true;
-                processBtns[3].disabled = false;
-            }
-        }
-    </script>
+     
+    <script src="events.js"></script>
 </body>
 
 </html>
