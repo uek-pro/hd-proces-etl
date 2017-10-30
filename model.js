@@ -10,7 +10,6 @@ var model = {
     productId: 0,
     product: null,
     reviews: null,
-    reviewsCount: 0,
     pageCount: 0,
     extract() {
         
@@ -24,7 +23,7 @@ var model = {
     clear() {
 
     },
-    trySetProductInfo(productId) {
+    setProductInfo(productId) {
 
         const parent = this;
         
@@ -39,15 +38,12 @@ var model = {
 
                 const doc = new DOMParser().parseFromString(response.result, "text/html");
                 parent.product = ProductParser.parseProduct(doc);
-                parent.reviewsCount = ProductParser.parseReviewCount(doc);
-                parent.pageCount = parent.reviewsCount > 0 ? Math.floor(parent.reviewsCount / 10) + 1 : 0;
+                parent.pageCount = parent.product.reviewsCount > 0 ? Math.ceil(parent.product.reviewsCount / 10) : 0;
                 parent.productId = productId;
-                
-                document.getElementById('message').textContent = response.message; // TODO: przerzucić do widoku
-                document.getElementById('result').innerHTML = parent.product.textValue();
-                document.getElementById('reviewsCount').textContent = 'Liczba opinii: ' + parent.reviewsCount;
-    
-                updateUI(ProductStatus.FOUNDED);
+
+                controller.showMessage(response.message);
+                controller.showProductInfo(parent.product);
+                controller.updateUI(ProductStatus.FOUNDED);
             }
         });
     },
@@ -58,7 +54,6 @@ var model = {
         if (parent.pageCount == 0 || counter > parent.pageCount) return;
 
         console.log("Będe pobierał " + counter + " stronę.");
-        var reviewsDiv = document.getElementById('reviewsResult'); //
 
         $.ajax({
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
@@ -72,9 +67,12 @@ var model = {
 
                 const doc = new DOMParser().parseFromString(response.result, "text/html");
                 const reviews = doc.querySelectorAll('ol.product-reviews > li.review-box');
+
                 for (var i = 0, k = reviews.length; i < k; i++) {
+
                     const review = ReviewsParser.parseReview(reviews[i]);
-                    $(reviewsDiv).append(review.textValue((counter - 1) * 10 + i + 1)); // TODO: przerzucić do widoku
+                    //console.log(review);
+                    controller.appendReview(review, (counter - 1) * 10 + i + 1);
                 }
     
                 console.log("Strona " + counter + " została przekształcona.");

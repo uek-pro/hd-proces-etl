@@ -1,10 +1,11 @@
 class Product {
-    constructor(id, type, brand, model, remarks) {
+    constructor(id, type, brand, model, remarks, reviewsCount) {
         this.id = id;
         this.type = type;
         this.brand = brand;
         this.model = model;
         this.remarks = remarks;
+        this.reviewsCount = reviewsCount;
     }
 
     textValue() {
@@ -12,7 +13,8 @@ class Product {
             "<tr><td>Rodzaj urządzenia</td><td>" + this.type + "</td></tr>" +
             "<tr><td>Marka</td><td>" + this.brand + "</td></tr>" +
             "<tr><td>Model</td><td>" + this.model + "</td></tr>" +
-            "<tr><td>Dodatkowe uwagi</td><td>" + this.remarks + "</td></tr></table>"
+            "<tr><td>Dodatkowe uwagi</td><td>" + this.remarks + "</td></tr>" +
+            "<tr><td>Liczba opinii</td><td>" + this.reviewsCount + "</td></tr></table>"
         );
     }
 }
