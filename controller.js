@@ -17,6 +17,15 @@ const controller = {
     appendReview(review, lp) {
         this.view.appendReview(review, lp);
     },
+    extractData() {
+        this.model.extract();
+    },
+    transformData() {
+        this.model.transform();
+    },
+    loadData() {
+        this.model.load();
+    },
     model: model,
     view: view
 }

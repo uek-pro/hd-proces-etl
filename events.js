@@ -15,20 +15,20 @@ processBtns[0].addEventListener('click', function () {
 // zdarzenie klinięcia w przycisk Extract
 processBtns[1].addEventListener('click', function () {
 
-    // TODO: implementacja Extract + info o liczbie pobranych plików
+    controller.extractData(); // + info o liczbie pobranych plików
     controller.updateUI(ProductStatus.EXTRACTED);
 });
 
 // zdarzenie klinięcia w przycisk Transform
 processBtns[2].addEventListener('click', function () {
 
-    // TODO: implementacja Transform
+    controller.transformData();
     controller.updateUI(ProductStatus.TRANSFORMED);
 });
 
 // zdarzenie klinięcia w przycisk Load
 processBtns[3].addEventListener('click', function () {
 
-    // TODO: implementacja Load + info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
+    controller.loadData() // + info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
     controller.updateUI(ProductStatus.LOADED);
 });
