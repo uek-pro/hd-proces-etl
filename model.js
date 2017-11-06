@@ -49,6 +49,22 @@ var model = {
     },
     load() {
         console.log(this.transformation);
+
+        const parent = this;
+        
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'insert-product-data',
+                productData: this.transformation
+            },
+            success: function (response) {
+
+                console.log(response.message);
+                console.log(response.result);
+            }
+        });
     },
     clear() {
         this.extraction = [];

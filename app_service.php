@@ -16,11 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $response = showInformation("Nie ma produktu o takim identyfikatorze", false);
                 }
-                //print_r($http_response_header);
             } else {
                 $response = showInformation("Proszę podać prawidłowy identyfikator produktu", false);
             }
 
+        } else if ($_POST['protocol'] == 'insert-product-data') {
+
+            if (isset($_POST['productData'])) {
+                $content = $_POST['productData'];
+                //TODO: Połączenie z bazą danych i ewentualny zapis danych
+                $response = showInformation("Informacje o produkcie zostały zapisane w bazie danych", true, $content); //TMP
+            } else {
+                $response = showInformation("Proszę podać informacje o produkcie, które mają znaleść się w bazie danych", false);
+            }
         } else {
             $response = showInformation("Ale o co chodzi?", true);
         }
@@ -35,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function getPage($iItemId, $iReviewsPage = 0) {
     try {
         $content = @file_get_contents("https://www.ceneo.pl/" . $_POST['itemId'] . ($iReviewsPage > 1 ? "/opinie-" . $iReviewsPage : ""));
-        // https://stackoverflow.com/a/272377
+        
         if ($content === false) {
             return "";
         }
