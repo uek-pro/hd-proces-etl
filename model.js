@@ -57,7 +57,7 @@ var model = {
             method: 'post',
             data: {
                 protocol: 'insert-product-data',
-                productData: this.transformation
+                productData: JSON.stringify({product: this.product, reviews: this.transformation})
             },
             success: function (response) {
 
@@ -67,6 +67,10 @@ var model = {
         });
     },
     clear() {
+        this.productId = 0;
+        this.product = null;
+        this.reviews = null;
+        this.pageCount = 0;
         this.extraction = [];
         this.transformation = [];
     },

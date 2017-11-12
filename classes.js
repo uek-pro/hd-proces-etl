@@ -20,7 +20,7 @@ class Product {
 }
 
 class Review {
-    constructor(id, pros, cons, summary, starsCount, author, date, isRecommended, voteYesCount, voteNoCount) {
+    constructor(id, pros, cons, summary, starsCount, author, date, isRecommended, positiveVotesCount, negativeVotesCount) {
         this.id = id;
         this.pros = pros;
         this.cons = cons;
@@ -29,8 +29,8 @@ class Review {
         this.author = author;
         this.date = date;
         this.isRecommended = isRecommended;
-        this.voteYesCount = voteYesCount;
-        this.voteNoCount = voteNoCount;
+        this.positiveVotesCount = positiveVotesCount;
+        this.negativeVotesCount = negativeVotesCount;
     }
 
     textValue(lp) {
@@ -43,8 +43,8 @@ class Review {
             "<tr><td>Autor opinii</td><td>" + this.author + "</td></tr>" +
             "<tr><td>Data wystawienia opinii</td><td>" + this.date + "</td></tr>" +
             "<tr><td>Czy poleca</td><td>" + (this.isRecommended ? 'Tak' : 'Nie') + "</td></tr>" +
-            "<tr><td>Ocena opinii jako przydatna</td><td>" + this.voteYesCount + "</td></tr>" +
-            "<tr><td>Ocena opinii jako nieprzydatna</td><td>" + this.voteNoCount + "</td></tr></table><hr/>"
+            "<tr><td>Ocena opinii jako przydatna</td><td>" + this.positiveVotesCount + "</td></tr>" +
+            "<tr><td>Ocena opinii jako nieprzydatna</td><td>" + this.negativeVotesCount + "</td></tr></table><hr/>"
         );
     }
 }
