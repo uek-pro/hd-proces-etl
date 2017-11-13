@@ -1,34 +1,64 @@
-const idElement = document.getElementById('idValue');
-const processBtns = document.querySelectorAll("input.process-button");
+const indicatorHandle = document.getElementById('indicator-place');
+const handles = {
+    productIdElement: document.getElementById('productIdValue')
+};
 
-document.querySelector('input[value=Pokaż]').addEventListener('click', function () {
+handles.search = document.getElementById('search');
+handles.search.addEventListener('click', function () {
+
+    controller.showProductInfoAsync(handles.productIdElement.value);
+});
+
+// zdarzenie kliknięcia w przycisk Pobieranie
+handles.fromURL = document.getElementById('fromURL');
+handles.fromURL.addEventListener('click', function () {
     
-    controller.showProductIfExists(idElement.value);
+    // TODO: implement
 });
 
-// zdarzenie klinięcia w przycisk ETL
-processBtns[0].addEventListener('click', function () {
+// zdarzenie kliknięcia w przycisk Wczytywanie
+handles.fromDatabase = document.getElementById('fromDatabase');
+handles.fromDatabase.addEventListener('click', function () {
 
-    controller.showProductsReviews();
+    // TODO: implement
 });
 
-// zdarzenie klinięcia w przycisk Extract
-processBtns[1].addEventListener('click', function () {
+// zdarzenie kliknięcia w przycisk ETL
+handles.etl = document.getElementById('etl');
+handles.etl.addEventListener('click', function () {
 
-    controller.extractData(); // + info o liczbie pobranych plików
-    controller.updateUI(ProductStatus.EXTRACTED);
+    // TODO: implement
 });
 
-// zdarzenie klinięcia w przycisk Transform
-processBtns[2].addEventListener('click', function () {
+// zdarzenie kliknięcia w przycisk Extract
+handles.extract = document.getElementById('extract');
+handles.extract.addEventListener('click', function () {
 
+    $(event.target).addClass("disabled");
+    controller.extractData();
+});
+
+// zdarzenie kliknięcia w przycisk Transform
+handles.transform = document.getElementById('transform');
+handles.transform.addEventListener('click', function () {
+
+    $(event.target).addClass("disabled");
     controller.transformData();
-    controller.updateUI(ProductStatus.TRANSFORMED);
 });
 
-// zdarzenie klinięcia w przycisk Load
-processBtns[3].addEventListener('click', function () {
+// zdarzenie kliknięcia w przycisk Load
+handles.load = document.getElementById('load');
+handles.load.addEventListener('click', function () {
 
-    controller.loadData() // + info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
-    controller.updateUI(ProductStatus.LOADED);
+    $(event.target).addClass("disabled");
+    controller.loadData();
+});
+
+// zdarzenie kliknięcia w przycisk Wprowadź następne
+handles.nextSearch = document.getElementById('next');
+handles.nextSearch.addEventListener('click', function () {
+    
+    $(event.target).addClass("disabled");
+    controller.clearData();
+    controller.updateUI(AppStatus.NONE);
 });

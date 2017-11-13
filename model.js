@@ -1,22 +1,26 @@
-const ProductStatus = {
-    NONE: 0,
-    FOUNDED: 1,
-    EXTRACTED: 2,
-    TRANSFORMED: 3,
-    LOADED: 4
-}
-
-var model = {
+const model = {
     productId: 0,
     product: null,
     reviews: null,
     pageCount: 0,
-    extraction: [],
-    transformation: [],
+    rawData: [], // extraction
+    processedData: [], // transformation
     extract(counter = 1) {
 
         const parent = this;
-        if (parent.pageCount == 0 || counter > parent.pageCount) return;
+        if (parent.pageCount == 0) {
+            controller.updateUI(AppStatus.NONE);
+            controller.stopIndicator();
+            return;
+        } 
+        else if (counter > parent.pageCount) {
+            console.log(this.rawData);
+            // TODO: +info o liczbie pobranych plików
+
+            controller.updateUI(AppStatus.EXTRACTED);
+            controller.stopIndicator();
+            return;
+        }
 
         $.ajax({
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
@@ -27,29 +31,36 @@ var model = {
                 reviewsPageNumber: counter
             },
             success: function (response) {
-                parent.extraction.push(response.result);
+                parent.rawData.push(response.result);
                 parent.extract(counter + 1);
             }
         });
     },
     transform() {
-        console.log(this.extraction);
 
-        for (let i = 0, k = this.extraction.length; i < k; i++) {
+        controller.startIndicator();
 
-            const doc = new DOMParser().parseFromString(this.extraction[i], "text/html");
+        for (let i = 0, k = this.rawData.length; i < k; i++) {
+
+            const doc = new DOMParser().parseFromString(this.rawData[i], "text/html");
             const reviews = doc.querySelectorAll('ol.product-reviews > li.review-box');
     
             for (let j = 0, l = reviews.length; j < l; j++) {
     
                 const review = ReviewsParser.parseReview(reviews[j]);
-                this.transformation.push(review);
+                this.processedData.push(review);
             }
         }
+        // NOTE: czy napewno zawsze pobrane zostają wszystkie opinie?
+        console.log(this.processedData);
+        // TODO: +wyświetl wszystkie opinie (processedData); +info
+
+        controller.updateUI(AppStatus.TRANSFORMED);
+        controller.stopIndicator();
     },
     load() {
-        console.log(this.transformation);
 
+        controller.startIndicator();
         const parent = this;
         
         $.ajax({
@@ -57,12 +68,14 @@ var model = {
             method: 'post',
             data: {
                 protocol: 'insert-product-data',
-                productData: JSON.stringify({product: this.product, reviews: this.transformation})
+                productData: JSON.stringify({product: this.product, reviews: this.processedData})
             },
             success: function (response) {
 
-                console.log(response.message);
-                console.log(response.result);
+                console.log(response.message, response.result);
+                // TODO: +info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
+                controller.updateUI(AppStatus.LOADED);
+                controller.stopIndicator();
             }
         });
     },
@@ -71,11 +84,12 @@ var model = {
         this.product = null;
         this.reviews = null;
         this.pageCount = 0;
-        this.extraction = [];
-        this.transformation = [];
+        this.rawData = [];
+        this.processedData = [];
     },
     setProductInfo(productId) {
 
+        controller.startIndicator();
         const parent = this;
         
         $.ajax({
@@ -93,41 +107,13 @@ var model = {
                 parent.productId = productId;
 
                 controller.showMessage(response.message);
-                controller.showProductInfo(parent.product);
-                controller.updateUI(ProductStatus.FOUNDED);
-            }
-        });
-    },
-    setReviewsFromPage(counter) {
-
-        const parent = this;
-
-        if (parent.pageCount == 0 || counter > parent.pageCount) return;
-
-        console.log("Będe pobierał " + counter + " stronę.");
-
-        $.ajax({
-            url: 'http://localhost/web/hd-proces-etl/app_service.php',
-            method: 'post',
-            data: {
-                protocol: 'get-item-page',
-                itemId: parent.productId,
-                reviewsPageNumber: counter
-            },
-            success: function (response) {
-
-                const doc = new DOMParser().parseFromString(response.result, "text/html");
-                const reviews = doc.querySelectorAll('ol.product-reviews > li.review-box');
-
-                for (var i = 0, k = reviews.length; i < k; i++) {
-
-                    const review = ReviewsParser.parseReview(reviews[i]);
-                    //console.log(review);
-                    controller.appendReview(review, (counter - 1) * 10 + i + 1);
+                if (response.success) {
+                    controller.displayProductInfo(parent.product);
+                    controller.updateUI(AppStatus.FOUNDED);
+                } else {
+                    controller.updateUI(AppStatus.NONE);
                 }
-    
-                console.log("Strona " + counter + " została przekształcona.");
-                parent.setReviewsFromPage(counter + 1);
+                controller.stopIndicator();
             }
         });
     }

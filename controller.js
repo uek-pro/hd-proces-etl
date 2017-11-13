@@ -1,23 +1,24 @@
 const controller = {
-    showProductIfExists(productId) {
+    showProductInfoAsync(productId) {
         this.model.setProductInfo(productId);
     },
-    showProductsReviews() {
-        this.model.setReviewsFromPage(1);
+    displayProductInfo(product) {
+        this.view.displayProductInfo(product);
     },
     showMessage(textContent) {
         this.view.displayMessage(textContent);
     },
-    showProductInfo(product) {
-        this.view.displayProductInfo(product);
+    updateUI(appStatus) {
+        this.view.updateButtonsStatus(appStatus);
     },
-    updateUI(productStatus) {
-        this.view.updateInputsStatus(productStatus);
+    startIndicator() {
+        this.view.showIndicator();
     },
-    appendReview(review, lp) {
-        this.view.appendReview(review, lp);
+    stopIndicator() {
+        this.view.hideIndicator();
     },
     extractData() {
+        this.startIndicator();
         this.model.extract();
     },
     transformData() {
@@ -25,6 +26,11 @@ const controller = {
     },
     loadData() {
         this.model.load();
+    },
+    clearData() {
+        this.model.clear();
+        this.view.clearReports();
+        this.view.clearProductInfo();
     },
     model: model,
     view: view

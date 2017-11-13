@@ -6,29 +6,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Projekt. Proces ETL</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;subset=latin-ext">
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script src="classes.js"></script>
-    <script src="parsers.js"></script>
-
+    <script src="globals.js"></script>
     <script src="model.js"></script>
     <script src="view.js"></script>
     <script src="controller.js"></script>
 </head>
 
 <body>
-    <input id="idValue" type="number" value="39820673" />
-    <input type="button" value="Pokaż" />
+    <div class="header">
+        <div class="head">
+            <a href="">
+                <img class="logo" src="logo.jpg" alt="Proces ETL - Projekt" />
+            </a>
+            <h1>Projekt. Proces ETL</h1>
+            <p>DMM 2017</p>
+        </div>
+        <div class="source">
+            <a href="https://github.com/uek-pro/hd-proces-etl">
+                <span>pokaż źródło aplikacji</span>
+                <img src="gh-icon.svg" width="26" alt="Źródło aplikacji" />
+            </a>
+        </div>
+    </div>
 
-    <input class="process-button" type="button" value="ETL" disabled/>
-    <input class="process-button" type="button" value="E" disabled/>
-    <input class="process-button" type="button" value="T" disabled/>
-    <input class="process-button" type="button" value="L" disabled/>
+    <div class="menu">
+        <span class="button" id="fromURL">Pobieranie</span>
+        <span class="button" id="fromDatabase">Wczytywanie</span>
+    </div>
 
-    <p id="message"></p>
+    <div class="main">
 
-    <div id="productResult"></div>
-    <div id="reviewsResult"></div>
+        <div class="form">
+            <label for="productIdValue">Wprowadź kod produktu: </label>
+            <input id="productIdValue" type="number" value="42394701" />
+        </div>
+
+        <span class="button" id="search">Pokaż</span>
+
+        <p id="message"></p> <!-- TODO: usuwanie wiadomości -->
+
+        <div class="result">
+            <div class="process">
+                <div class="report" id="productResult"></div>
+                <span class="button disabled" id="etl">ETL</span>
+                <span class="button disabled" id="extract">Extract</span>
+            </div>
+
+            <div class="process">
+                <div class="report" id="extractResult"></div>
+                <span class="button disabled" id="transform">Transform</span>
+            </div>
+
+            <div class="process">
+                <div class="report" id="transformResult"></div>
+                <span class="button disabled" id="load">Load</span>
+            </div>
+
+            <div class="process">
+                <div class="report" id="loadResult"></div>
+                <span class="button disabled" id="next">Wprowadź następne</span>
+            </div>
+        </div>
+
+        <div id="indicator-place"></div>
+    </div>
 
     <script src="events.js"></script>
 </body>

@@ -1,3 +1,47 @@
+const AppStatus = {
+    NONE: 0,
+    FOUNDED: 1,
+    EXTRACTED: 2,
+    TRANSFORMED: 3,
+    LOADED: 4
+}
+
+const Mode = {
+    URL: 0,
+    DATABASE: 1
+}
+
+const Indicator = {
+    STOP: 0,
+    START: 1
+}
+
+class Product {
+    constructor(id, type, brand, model, remarks, reviewsCount) {
+        this.id = id;
+        this.type = type;
+        this.brand = brand;
+        this.model = model;
+        this.remarks = remarks;
+        this.reviewsCount = reviewsCount;
+    }
+}
+
+class Review {
+    constructor(id, pros, cons, summary, starsCount, author, date, isRecommended, positiveVotesCount, negativeVotesCount) {
+        this.id = id;
+        this.pros = pros;
+        this.cons = cons;
+        this.summary = summary;
+        this.starsCount = starsCount;
+        this.author = author;
+        this.date = date;
+        this.isRecommended = isRecommended;
+        this.positiveVotesCount = positiveVotesCount;
+        this.negativeVotesCount = negativeVotesCount;
+    }
+}
+
 const ProductParser = {
     parseProduct: function (doc) {
 

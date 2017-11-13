@@ -1,0 +1,202 @@
+body {
+    color: #333;
+    font-size: 1em;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+a {
+    color: #6a84ca;
+    text-decoration: none;
+}
+
+img:hover {
+    opacity: 0.85;
+}
+
+p, h1, h2 {
+    margin: 0;
+}
+
+h1, h2 {
+    font-weight: 300;
+}
+
+.header {
+    position: relative;
+}
+
+.logo {
+    margin: 20px 0;
+}
+
+.source {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.source a {
+    color: #aaa;
+    font-weight: 300;
+    text-decoration: none;
+}
+
+.source img {
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.head {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.head > p {
+    font-weight: 300;
+    font-size: 0.85em;
+}
+
+.menu {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.button {
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 1.250em;
+    font-weight: 600;
+    margin: 0 50px;
+    display: inline-block;
+    width: 160px;
+}
+
+.button:hover {
+    color: #6a84ca;
+}
+
+.main {
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 60px;
+}
+
+.form {
+    width: 260px;
+    margin: 10px auto;
+}
+
+.form label {
+    margin:0 0 3px 0;
+    padding: 0;
+    display: block;
+    font-weight: 300;
+    text-align: left;
+}
+
+.form input[type=number] {
+    box-sizing: border-box;
+    border:1px solid #6a84ca;
+    padding: 7px;
+    margin: 0px;
+    width: 100%;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+#message {
+    margin: 4px 0;
+    font-weight: 300;
+    color: #6a84ca;
+}
+
+dl {
+    margin: 10px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: max-content auto;
+}
+
+dt {
+    font-weight: 600;
+    grid-column-start: 1;
+}
+
+dd {
+    grid-column-start: 2;
+}
+
+.report {
+    margin: 10px;
+    padding: 10px;
+    background-color: #eee;
+}
+
+/*
+    https://github.com/tobiasahlin/SpinKit      
+    usage:
+        <div class="spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+*/
+.spinner {
+    margin: 30px auto;
+    width: 60px;
+    height: 60px;
+    position: relative;
+  }
+
+  .cube1 {
+    background-color: #6a84ca;
+  }
+
+  .cube2 {
+    background-color: #f0e68c;
+  }
+  
+  .cube1, .cube2 {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
+    animation: sk-cubemove 1.8s infinite ease-in-out;
+  }
+  
+  .cube2 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+  }
+  
+  @-webkit-keyframes sk-cubemove {
+    25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
+    50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
+    75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
+    100% { -webkit-transform: rotate(-360deg) }
+  }
+  
+  @keyframes sk-cubemove {
+    25% { 
+      transform: translateX(42px) rotate(-90deg) scale(0.5);
+      -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+    } 50% { 
+      transform: translateX(42px) translateY(42px) rotate(-179deg);
+      -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+    } 50.1% { 
+      transform: translateX(42px) translateY(42px) rotate(-180deg);
+      -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+    } 75% { 
+      transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+      -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+    } 100% { 
+      transform: rotate(-360deg);
+      -webkit-transform: rotate(-360deg);
+    }
+  }
