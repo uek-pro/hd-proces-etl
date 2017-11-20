@@ -40,6 +40,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $response = showInformation("Proszę podać informacje o produkcie, które mają znaleść się w bazie danych", false);
             }
+
+        } else if ($_POST['protocol'] == 'get-product-data') {
+            
+            if (isset($_POST['productId']) && ctype_digit($_POST['productId'])) {
+                
+                require_once 'database\SQLite_Connection.php';
+                $database = SQLite_Connection::prepareDatabase();
+                
+                // TODO: to implement
+
+                $response = showInformation("Informacje o wybranym produkcie zostały wczytane pomyślnie", true);
+            } else {
+                $response = showInformation("Proszę podać prawidłowy identyfikator produktu", false);
+            }
+
         } else {
             $response = showInformation("Ale o co chodzi?", true);
         }
@@ -56,11 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require_once 'database\SQLite_Connection.php';
         $database = SQLite_Connection::prepareDatabase();
 
-        if ($_GET['obsluga'] == '123456q') {
-
-            // TODO: getRecords();
-
-        } else if ($_GET['obsluga'] == 'del') {
+        if ($_GET['obsluga'] == 'del123') {
             
             if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
                 
@@ -71,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo 'Wystąpił błąd podczas usuwania produktu o id ' . $_GET['id'];
             }
             
-        } else if ($_GET['obsluga'] == 'del123') {
+        } else if ($_GET['obsluga'] == '123456q') {
 
             $database->dropTables();
             echo 'Usunięcie rekordów bazy danych.';

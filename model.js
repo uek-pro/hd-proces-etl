@@ -1,4 +1,8 @@
 const model = {
+    App: {
+        status: AppStatus.NONE,
+        mode: Mode.URL
+    },
     productId: 0,
     product: null,
     reviews: null,
@@ -9,15 +13,16 @@ const model = {
 
         const parent = this;
         if (parent.pageCount == 0) {
-            controller.updateUI(AppStatus.NONE);
+            controller.changeAppStatus(AppStatus.NONE);
             controller.stopIndicator();
             return;
         } 
         else if (counter > parent.pageCount) {
             console.log(this.rawData);
-            // TODO: +info o liczbie pobranych plików
+            //console.log("Liczba pobranych stron internetowych: ", parent.pageCount);
+            controller.showExtractReport(parent.pageCount);
 
-            controller.updateUI(AppStatus.EXTRACTED);
+            controller.changeAppStatus(AppStatus.EXTRACTED);
             controller.stopIndicator();
             return;
         }
@@ -53,9 +58,9 @@ const model = {
         }
         // NOTE: czy napewno zawsze pobrane zostają wszystkie opinie?
         console.log(this.processedData);
-        // TODO: +wyświetl wszystkie opinie (processedData); +info
+        controller.showAllReviews(this.processedData);
 
-        controller.updateUI(AppStatus.TRANSFORMED);
+        controller.changeAppStatus(AppStatus.TRANSFORMED);
         controller.stopIndicator();
     },
     load() {
@@ -73,8 +78,9 @@ const model = {
             success: function (response) {
 
                 console.log(response.message, response.result);
-                // TODO: +info o liczbie dodanych rekordów do bazy (dane nie mogą się dublować)
-                controller.updateUI(AppStatus.LOADED);
+                controller.showLoadReport(response.result == null ? 0 : response.result);
+
+                controller.changeAppStatus(AppStatus.LOADED);
                 controller.stopIndicator();
             }
         });
@@ -109,10 +115,35 @@ const model = {
                 controller.showMessage(response.message);
                 if (response.success) {
                     controller.displayProductInfo(parent.product);
-                    controller.updateUI(AppStatus.FOUNDED);
+                    controller.changeAppStatus(AppStatus.FOUNDED);
                 } else {
-                    controller.updateUI(AppStatus.NONE);
+                    controller.changeAppStatus(AppStatus.NONE);
                 }
+                controller.stopIndicator();
+                setTimeout(
+                    function() {
+                        controller.hideMessage();
+                    }, 
+                    5000
+                );
+            }
+        });
+    },
+    getProductDataFromDatabase(productId) {
+
+        controller.startIndicator();
+        const parent = this;
+        
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'get-product-data',
+                productId: productId
+            },
+            success: function (response) {
+                
+                controller.showMessage(response.message);
                 controller.stopIndicator();
             }
         });

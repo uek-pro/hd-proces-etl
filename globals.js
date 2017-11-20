@@ -1,19 +1,14 @@
+const Mode = {
+    URL: 0,
+    DATABASE: 1
+}
+
 const AppStatus = {
     NONE: 0,
     FOUNDED: 1,
     EXTRACTED: 2,
     TRANSFORMED: 3,
     LOADED: 4
-}
-
-const Mode = {
-    URL: 0,
-    DATABASE: 1
-}
-
-const Indicator = {
-    STOP: 0,
-    START: 1
 }
 
 class Product {
@@ -48,7 +43,7 @@ const ProductParser = {
         const urlValueElement = doc.querySelector('meta[property="og:url"]');
         const productId = urlValueElement != null ? /www.ceneo.pl\/(.*)/g.exec(urlValueElement.attributes['content'].textContent)[1] : "";
 
-        const typeElement = doc.querySelector('nav dd > span:nth-last-child(2) > a > span');
+        const typeElement = doc.querySelector('nav dd > span:nth-child(2) > a > span'); // NOTE: czy może pobierać ostatnią podkategorię nth-last-child(2)?
         const type = typeElement != null ? typeElement.textContent : "";
 
         const brandElement = doc.querySelector('meta[property="og:brand"]');
@@ -81,7 +76,7 @@ const ReviewsParser = {
         }
 
         var isRecommended = null;
-        var recommendationElement = review.querySelector('div.reviewer-recommendation em') != null ? review.querySelector('div.reviewer-recommendation em') : "";
+        var recommendationElement = review.querySelector('div.reviewer-recommendation em') != null ? review.querySelector('div.reviewer-recommendation em').textContent : "";
         if (recommendationElement == "Polecam")
             isRecommended = true;
         else
@@ -91,7 +86,7 @@ const ReviewsParser = {
             review.querySelector('button.vote-yes').attributes['data-review-id'].textContent,
             pros,
             cons,
-            review.querySelector('p.product-review-body').textContent.slice(0, 50), //TMP
+            review.querySelector('p.product-review-body').textContent.slice(0, 200), // NOTE: tymczasowo
             review.querySelector('span.review-score-count').textContent.split('/')[0],
             review.querySelector('div.reviewer-name-line').textContent.trim(),
             review.querySelector('span.review-time > time').attributes['datetime'].textContent,

@@ -143,4 +143,8 @@ class SQLite_Connection implements IConnection {
             return false;
         }
     }
+
+    public function selectProductAndHisReviews($iProductId) {
+        // TODO: to implement
+    }
 }

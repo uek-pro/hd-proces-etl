@@ -67,6 +67,7 @@ h1, h2 {
     font-size: 1.250em;
     font-weight: 600;
     margin: 0 50px;
+    padding: 12px;
     display: inline-block;
     width: 160px;
 }
@@ -108,7 +109,14 @@ h1, h2 {
     opacity: 0.35;
 }
 
+.active {
+    background-color: #000;
+    color: #fff;
+    pointer-events: none;
+}
+
 #message {
+    height: 20px;
     margin: 4px 0;
     font-weight: 300;
     color: #6a84ca;
@@ -136,6 +144,12 @@ dd {
     background-color: #eee;
 }
 
+#indicator-place {
+    margin: 30px auto;
+    width: 60px;
+    height: 60px;
+}
+
 /*
     https://github.com/tobiasahlin/SpinKit      
     usage:
@@ -145,58 +159,56 @@ dd {
         </div>
 */
 .spinner {
-    margin: 30px auto;
     width: 60px;
     height: 60px;
     position: relative;
-  }
+}
 
-  .cube1 {
+.cube1 {
     background-color: #6a84ca;
-  }
+}
 
-  .cube2 {
+.cube2 {
     background-color: #f0e68c;
-  }
-  
-  .cube1, .cube2 {
+}
+
+.cube1, .cube2 {
     width: 15px;
     height: 15px;
     position: absolute;
     top: 0;
     left: 0;
-    
     -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
     animation: sk-cubemove 1.8s infinite ease-in-out;
-  }
-  
-  .cube2 {
+}
+
+.cube2 {
     -webkit-animation-delay: -0.9s;
     animation-delay: -0.9s;
-  }
-  
-  @-webkit-keyframes sk-cubemove {
+}
+
+@-webkit-keyframes sk-cubemove {
     25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
     50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
     75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
     100% { -webkit-transform: rotate(-360deg) }
-  }
-  
-  @keyframes sk-cubemove {
+}
+
+@keyframes sk-cubemove {
     25% { 
-      transform: translateX(42px) rotate(-90deg) scale(0.5);
-      -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+        transform: translateX(42px) rotate(-90deg) scale(0.5);
+        -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
     } 50% { 
-      transform: translateX(42px) translateY(42px) rotate(-179deg);
-      -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+        transform: translateX(42px) translateY(42px) rotate(-179deg);
+        -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
     } 50.1% { 
-      transform: translateX(42px) translateY(42px) rotate(-180deg);
-      -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+        transform: translateX(42px) translateY(42px) rotate(-180deg);
+        -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
     } 75% { 
-      transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
-      -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+        transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
     } 100% { 
-      transform: rotate(-360deg);
-      -webkit-transform: rotate(-360deg);
+        transform: rotate(-360deg);
+        -webkit-transform: rotate(-360deg);
     }
-  }
+}
