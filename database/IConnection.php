@@ -9,4 +9,5 @@ interface IConnection {
     public function insertReviewsIfNotExists($oReviews, $iProductId);
     public function deleteProductWithReviews($iProductId);
     public function selectProductAndHisReviews($iProductId);
+    public function selectProducts();
 }

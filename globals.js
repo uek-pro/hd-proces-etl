@@ -1,16 +1,3 @@
-const Mode = {
-    URL: 0,
-    DATABASE: 1
-}
-
-const AppStatus = {
-    NONE: 0,
-    FOUNDED: 1,
-    EXTRACTED: 2,
-    TRANSFORMED: 3,
-    LOADED: 4
-}
-
 class Product {
     constructor(id, type, brand, model, remarks, reviewsCount) {
         this.id = id;
@@ -35,6 +22,11 @@ class Review {
         this.positiveVotesCount = positiveVotesCount;
         this.negativeVotesCount = negativeVotesCount;
     }
+}
+
+const Mode = {
+    CENEO: 0,
+    DATABASE: 1
 }
 
 const ProductParser = {

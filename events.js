@@ -1,61 +1,31 @@
 const indicatorHandle = document.getElementById('indicator-place');
-const handles = {
-    productIdElement: document.getElementById('productIdValue')
-};
 
-handles.search = document.getElementById('search');
-handles.search.addEventListener('click', function () {
-    controller.showProductInfoAsync(handles.productIdElement.value);
-});
-
-// zdarzenie kliknięcia w przycisk Pobieranie
-handles.fromURL = document.getElementById('fromURL');
-handles.fromURL.addEventListener('click', function () {
-    $(event.target).addClass("active");
-    $(handles.fromDatabase).removeClass("active");
-    controller.setAppMode(Mode.URL);
-});
-
-// zdarzenie kliknięcia w przycisk Wczytywanie
-handles.fromDatabase = document.getElementById('fromDatabase');
-handles.fromDatabase.addEventListener('click', function () {
-    $(event.target).addClass("active");
-    $(handles.fromURL).removeClass("active");
-    controller.setAppMode(Mode.DATABASE);
-});
-
-// zdarzenie kliknięcia w przycisk ETL
+const handles = {};
+handles.productCode = document.getElementById('product-code');
+handles.productSelect = document.getElementById('select-product');
+handles.urlMenu = document.getElementById('url-menu');
+handles.databaseMenu = document.getElementById('database-menu');
+handles.urlForm = document.getElementById('url-form');
+handles.databaseForm = document.getElementById('database-form');
+handles.searchProduct = document.getElementById('search-product');
+handles.loadProduct = document.getElementById('load-product');
+handles.updateProducts = document.getElementById('update-products');
 handles.etl = document.getElementById('etl');
-handles.etl.addEventListener('click', function () {
-    $(event.target).addClass("disabled");
-    controller.extractData(true);
-});
-
-// zdarzenie kliknięcia w przycisk Extract
 handles.extract = document.getElementById('extract');
-handles.extract.addEventListener('click', function () {
-    $(event.target).addClass("disabled");
-    controller.extractData();
-});
-
-// zdarzenie kliknięcia w przycisk Transform
 handles.transform = document.getElementById('transform');
-handles.transform.addEventListener('click', function () {
-    $(event.target).addClass("disabled");
-    controller.transformData();
-});
-
-// zdarzenie kliknięcia w przycisk Load
 handles.load = document.getElementById('load');
-handles.load.addEventListener('click', function () {
-    $(event.target).addClass("disabled");
-    controller.loadData();
-});
+handles.toJSON = document.getElementById('to-json');
+handles.toCSV = document.getElementById('to-csv');
+handles.back = document.getElementById('back');
+handles.panelHandleArray = document.querySelectorAll('.panel');
 
-// zdarzenie kliknięcia w przycisk Wprowadź następne
-handles.nextSearch = document.getElementById('next');
-handles.nextSearch.addEventListener('click', function () {
-    $(event.target).addClass("disabled");
-    controller.clearData();
-    controller.changeAppStatus(AppStatus.NONE);
-});
+handles.urlMenu.addEventListener('click', function () { controller.changeMode(Mode.CENEO); });
+handles.databaseMenu.addEventListener('click', function () { controller.changeMode(Mode.DATABASE); });
+handles.searchProduct.addEventListener('click', function () { controller.showProductInfoFromUrl(handles.productCode.value); });
+handles.loadProduct.addEventListener('click', function () { controller.showProductInfoFromDatabase(handles.productSelect.value); });
+handles.updateProducts.addEventListener('click', function () { controller.updateProductsAsync(); });
+handles.etl.addEventListener('click', function () { controller.extractData(true); });
+handles.extract.addEventListener('click', function () { controller.extractData(); });
+handles.transform.addEventListener('click', function () { controller.transformData(); });
+handles.load.addEventListener('click', function () { controller.loadData(); });
+handles.back.addEventListener('click', function () { controller.clearData(); });

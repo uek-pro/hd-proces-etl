@@ -6,12 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['protocol'])) {
 
-        if ($_POST['protocol'] == 'get-item-page') {
+        if ($_POST['protocol'] == 'get-product-page') {
 
-            if (isset($_POST['itemId']) && ctype_digit($_POST['itemId'])) {
+            if (isset($_POST['productId']) && ctype_digit($_POST['productId'])) {
 
                 $content = getPage(
-                    $_POST['itemId'],
+                    $_POST['productId'],
                     isset($_POST['reviewsPageNumber']) && ctype_digit($_POST['reviewsPageNumber']) ? $_POST['reviewsPageNumber'] : 0
                 );
 
@@ -48,11 +48,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 require_once 'database\SQLite_Connection.php';
                 $database = SQLite_Connection::prepareDatabase();
                 
-                // TODO: to implement
-
-                $response = showInformation("Informacje o wybranym produkcie zostały wczytane pomyślnie", true);
+                $data = $database->selectProductAndHisReviews($_POST['productId']);
+                if ($data != null) {
+                    $response = showInformation("Informacje o wybranym produkcie zostały wczytane pomyślnie", true, $data);
+                } else {
+                    $response = showInformation("Nie ma produktu o takim identyfikatorze w bazie danych", false);
+                }
             } else {
                 $response = showInformation("Proszę podać prawidłowy identyfikator produktu", false);
+            }
+
+        } else if ($_POST['protocol'] == 'get-products-list') {
+                
+            require_once 'database\SQLite_Connection.php';
+            $database = SQLite_Connection::prepareDatabase();
+            
+            $data = $database->selectProducts();
+            if ($data != null) {
+                $response = showInformation("Produkty wczytane pomyślnie", true, $data);
+            } else {
+                $response = showInformation("Wystąpił błąd podczas pobierania produktów", false);
             }
 
         } else {
@@ -92,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 function getPage($iItemId, $iReviewsPage = 0) {
     try {
-        $content = @file_get_contents("https://www.ceneo.pl/" . $_POST['itemId'] . ($iReviewsPage > 1 ? "/opinie-" . $iReviewsPage : ""));
+        $content = @file_get_contents("https://www.ceneo.pl/" . $_POST['productId'] . ($iReviewsPage > 1 ? "/opinie-" . $iReviewsPage : ""));
         
         if ($content === false) {
             return "";

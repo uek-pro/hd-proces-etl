@@ -41,12 +41,12 @@ class SQLite_Connection implements IConnection {
             pros TEXT,
             cons TEXT,
             summary TEXT,
-            stars_count INTEGER,
+            starsCount INTEGER,
             author TEXT,
             date TEXT, -- date? --
-            is_recommended TEXT, -- boolean? --
-            positive_votes_count INTEGER,
-            negative_votes_count INTEGER
+            isRecommended TEXT, -- boolean? --
+            positiveVotesCount INTEGER,
+            negativeVotesCount INTEGER
             )"
         );
     }
@@ -145,6 +145,37 @@ class SQLite_Connection implements IConnection {
     }
 
     public function selectProductAndHisReviews($iProductId) {
-        // TODO: to implement
+
+        $query = $this->pdo->prepare(
+            'SELECT *, product_id AS id FROM products WHERE product_id = :id LIMIT 1'
+        );
+        $query->bindValue(':id', $iProductId, PDO::PARAM_INT);
+        $query->execute();
+        if ($result['product'] = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        } else {
+            return null;
+        }
+
+        $query = $this->pdo->prepare(
+            'SELECT *, review_id AS id FROM reviews WHERE product_id = :id'
+        );
+        $query->bindValue(':id', $iProductId, PDO::PARAM_INT);
+        $query->execute();
+        $result['reviews'] = $query->fetchAll(PDO::FETCH_ASSOC);
+        $result['product']['reviewsCount'] = count($result['reviews']);
+        
+        return $result;
+    }
+
+    public function selectProducts() {
+        $query = $this->pdo->prepare(
+            'SELECT product_id AS id, model FROM products ORDER BY product_id ASC'
+        );
+        if ($query->execute()) {
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            return null;
+        }
     }
 }

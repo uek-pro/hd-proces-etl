@@ -1,14 +1,15 @@
 const controller = {
-    showProductInfoAsync(productId) {
-        if (this.model.App.status != AppStatus.NONE) {
+    showProductInfoFromUrl(productId) {
+        if (!this.model.isInitialState()) {
             this.clearData();
-            this.changeAppStatus(AppStatus.NONE);
         }
-        if (this.model.App.mode == Mode.URL) {
-            this.model.setProductInfo(productId);
-        } else {
-            this.model.getProductDataFromDatabase(productId);
+        this.model.setProductInfoFromUrl(productId);
+    },
+    showProductInfoFromDatabase(productId) {
+        if (!this.model.isInitialState()) {
+            this.clearData();
         }
+        this.model.getProductDataFromDatabase(productId);
     },
     displayProductInfo(product) {
         this.view.displayProductInfo(product);
@@ -28,12 +29,35 @@ const controller = {
     showLoadReport(reviewsCount) {
         this.view.displayLoadReport(reviewsCount);
     },
-    changeAppStatus(appStatus) {
-        this.model.App.status = appStatus;
-        this.view.updateButtonsStatus(appStatus);
+    setElementAvailability(handle, isEnabled) {
+        this.view.setElementAvailability(handle, isEnabled);
     },
-    setAppMode(mode) {
-        this.model.App.mode = mode;
+    setElementVisibility(handle, isVisible) {
+        this.view.setElementVisibility(handle, isVisible);
+    },
+    changeMode(mode) {
+        if (mode == Mode.CENEO) {
+            this.view.setElementActivity(handles.databaseMenu, false);
+            this.view.setElementActivity(handles.urlMenu, true);
+            this.view.setElementVisibility(handles.databaseForm, false);
+            this.view.setElementVisibility(handles.urlForm, true);
+            this.view.setElementVisibility(handles.loadProduct, false);
+            this.view.setElementVisibility(handles.searchProduct, true);
+        } else {
+            this.view.setElementActivity(handles.urlMenu, false);
+            this.view.setElementActivity(handles.databaseMenu, true);
+            this.view.setElementVisibility(handles.urlForm, false);
+            this.view.setElementVisibility(handles.databaseForm, true);
+            this.view.setElementVisibility(handles.searchProduct, false);
+            this.view.setElementVisibility(handles.loadProduct, true);
+        }
+        this.model.mode = mode;
+    },
+    showPanel(panelHandle, buttonHandleArray = []) {
+        this.view.showPanel(panelHandle, buttonHandleArray);
+    },
+    updateProductsAsync() {
+        this.model.updateProductsFromDatabase();
     },
     startIndicator() {
         this.view.showIndicator();
@@ -53,6 +77,14 @@ const controller = {
     },
     clearData() {
         this.model.clear();
+        this.view.setElementVisibility(handles.panelHandleArray[0], false);
+        this.view.setElementVisibility(handles.panelHandleArray[1], false);
+        this.view.setElementVisibility(handles.panelHandleArray[2], false);
+        this.view.setElementVisibility(handles.panelHandleArray[3], false);
+        this.view.setElementVisibility(handles.etl, false);
+        this.view.setElementVisibility(handles.extract, false);
+        this.view.setElementVisibility(handles.transform, false);
+        this.view.setElementVisibility(handles.load, false);
         this.view.clearReports();
         this.view.clearProductInfo();
     },

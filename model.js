@@ -1,8 +1,5 @@
 const model = {
-    App: {
-        status: AppStatus.NONE,
-        mode: Mode.URL
-    },
+    mode: Mode.CENEO,
     productId: 0,
     product: null,
     reviews: null,
@@ -11,21 +8,27 @@ const model = {
     processedData: [], // transformation
     extract(isWholeProcess = false, counter = 1) {
 
+        if (counter == 1) {
+            controller.setElementVisibility(handles.extract, false);
+            controller.setElementVisibility(handles.etl, false);
+        }
+
         const parent = this;
         if (parent.pageCount == 0) {
-            controller.changeAppStatus(AppStatus.NONE);
+            controller.clearData();
             controller.stopIndicator();
             return;
-        } 
+        }
         else if (counter > parent.pageCount) {
             console.log(this.rawData);
-            //console.log("Liczba pobranych stron internetowych: ", parent.pageCount);
             controller.showExtractReport(parent.pageCount);
-
-            controller.changeAppStatus(AppStatus.EXTRACTED);
             controller.stopIndicator();
-            if (isWholeProcess)
+            if (isWholeProcess) {
+                controller.showPanel(handles.panelHandleArray[1], []);
                 this.transform(true);
+            } else {
+                controller.showPanel(handles.panelHandleArray[1], [handles.transform]);
+            }
             return;
         }
 
@@ -33,8 +36,8 @@ const model = {
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
             method: 'post',
             data: {
-                protocol: 'get-item-page',
-                itemId: parent.productId,
+                protocol: 'get-product-page',
+                productId: parent.productId,
                 reviewsPageNumber: counter
             },
             success: function (response) {
@@ -45,15 +48,16 @@ const model = {
     },
     transform(isWholeProcess = false) {
 
+        controller.setElementVisibility(handles.transform, false);
         controller.startIndicator();
 
         for (let i = 0, k = this.rawData.length; i < k; i++) {
 
             const doc = new DOMParser().parseFromString(this.rawData[i], "text/html");
             const reviews = doc.querySelectorAll('ol.product-reviews > li.review-box');
-    
+
             for (let j = 0, l = reviews.length; j < l; j++) {
-    
+
                 const review = ReviewsParser.parseReview(reviews[j]);
                 this.processedData.push(review);
             }
@@ -62,29 +66,33 @@ const model = {
         console.log(this.processedData);
         controller.showAllReviews(this.processedData);
 
-        controller.changeAppStatus(AppStatus.TRANSFORMED);
         controller.stopIndicator();
-        if (isWholeProcess)
+        if (isWholeProcess) {
+            controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV]);
             this.load();
+        } else {
+            controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV, handles.load]);
+        }
     },
     load() {
 
+        controller.setElementVisibility(handles.load, false);
         controller.startIndicator();
         const parent = this;
-        
+
         $.ajax({
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
             method: 'post',
             data: {
                 protocol: 'insert-product-data',
-                productData: JSON.stringify({product: this.product, reviews: this.processedData})
+                productData: JSON.stringify({ product: this.product, reviews: this.processedData })
             },
             success: function (response) {
 
-                console.log(response.message, response.result);
+                console.log(response.message);
                 controller.showLoadReport(response.result == null ? 0 : response.result);
 
-                controller.changeAppStatus(AppStatus.LOADED);
+                controller.showPanel(handles.panelHandleArray[3], []);
                 controller.stopIndicator();
             }
         });
@@ -97,17 +105,16 @@ const model = {
         this.rawData = [];
         this.processedData = [];
     },
-    setProductInfo(productId) {
-
+    setProductInfoFromUrl(productId) {
         controller.startIndicator();
         const parent = this;
-        
+
         $.ajax({
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
             method: 'post',
             data: {
-                protocol: 'get-item-page',
-                itemId: productId
+                protocol: 'get-product-page',
+                productId: productId
             },
             success: function (response) {
 
@@ -119,25 +126,22 @@ const model = {
                 controller.showMessage(response.message);
                 if (response.success) {
                     controller.displayProductInfo(parent.product);
-                    controller.changeAppStatus(AppStatus.FOUNDED);
-                } else {
-                    controller.changeAppStatus(AppStatus.NONE);
+                    controller.showPanel(handles.panelHandleArray[0], [handles.etl, handles.extract]);
+                    setTimeout(
+                        function () {
+                            controller.hideMessage();
+                        },
+                        5000
+                    );
                 }
                 controller.stopIndicator();
-                setTimeout(
-                    function() {
-                        controller.hideMessage();
-                    }, 
-                    5000
-                );
             }
         });
     },
     getProductDataFromDatabase(productId) {
-
         controller.startIndicator();
         const parent = this;
-        
+
         $.ajax({
             url: 'http://localhost/web/hd-proces-etl/app_service.php',
             method: 'post',
@@ -146,8 +150,55 @@ const model = {
                 productId: productId
             },
             success: function (response) {
-                
+
                 controller.showMessage(response.message);
+                if (response.success) {
+                    parent.product = response.result.product;
+                    parent.productId = productId;
+                    parent.processedData = response.result.reviews;
+
+                    controller.displayProductInfo(parent.product);
+                    controller.showAllReviews(parent.processedData);
+
+                    controller.showPanel(handles.panelHandleArray[0], []);
+                    controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV]);
+                    controller.showPanel(handles.panelHandleArray[3], []);
+                    setTimeout(
+                        function () {
+                            controller.hideMessage();
+                        },
+                        5000
+                    );
+                }
+                controller.stopIndicator();
+                console.log(parent);
+            }
+        });
+    },
+    isInitialState() {
+        return this.productId == 0 ? true : false;
+    },
+    updateProductsFromDatabase() {
+        controller.startIndicator();
+        const parent = this;
+
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'get-products-list'
+            },
+            success: function (response) {
+
+                console.log(response);
+                
+                $(handles.productSelect).empty();
+                for (let i = 0, k = response.result.length; i < k; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = response.result[i].id;
+                    opt.innerHTML = response.result[i].model;
+                    handles.productSelect.appendChild(opt);
+                }
                 controller.stopIndicator();
             }
         });

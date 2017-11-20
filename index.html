@@ -35,41 +35,54 @@
     </div>
 
     <div class="menu">
-        <span class="button" id="fromURL">Pobieranie</span>
-        <span class="button" id="fromDatabase">Wczytywanie</span>
+        <span class="button active" id="url-menu">Pobieraj<br />z Ceneo</span>
+        <span class="button" id="database-menu">Pobieraj<br />z bazy danych</span>
     </div>
 
     <div class="main">
 
-        <div class="form">
-            <label for="productIdValue">Wprowadź kod produktu: </label>
-            <input id="productIdValue" type="number" value="42394701" />
+        <div class="form" id="url-form">
+            <label for="product-code">Wprowadź kod produktu:</label>
+            <input id="product-code" type="number" value="43598443" />
         </div>
 
-        <span class="button" id="search">Pokaż</span>
+        <div class="form" id="database-form" style="display: none;">
+            <input id="update-products" type="button" value="\/" />
+            <label for="select-product">Wybierz produkt z bazy:</label>
+            <select id="select-product"></select>
+        </div>
 
-        <p id="message"></p> <!-- TODO: usuwanie wiadomości -->
+        <span class="button" id="search-product">Pobierz</span>
+        <span class="button" id="load-product" style="display: none;">Wczytaj</span>
 
-        <div class="result">
-            <div class="process">
-                <div class="report" id="productResult"></div>
-                <span class="button disabled" id="etl">ETL</span>
-                <span class="button disabled" id="extract">Extract</span>
+        <p id="message"></p>
+
+        <div class="processes">
+            <div class="panel" style="display: none;">
+                <div class="background">Product</div>
+                <div class="report" id="product-result"></div>
+                <span class="button" id="etl" style="display: none;">ETL</span>
+                <span class="button" id="extract" style="display: none;">Extract</span>
             </div>
 
-            <div class="process">
-                <div class="report" id="extractResult"></div>
-                <span class="button disabled" id="transform">Transform</span>
+            <div class="panel" style="display: none;">
+                <div class="background">Extract</div>
+                <div class="report" id="extract-result"></div>
+                <span class="button" id="transform" style="display: none;">Transform</span>
             </div>
 
-            <div class="process">
-                <div class="report" id="transformResult"></div>
-                <span class="button disabled" id="load">Load</span>
+            <div class="panel" style="display: none;">
+                <div class="background">Transform</div>
+                <div class="report" id="transform-result"></div>
+                <span class="button" id="to-json" style="display: none;">JSON</span>
+                <span class="button" id="to-csv" style="display: none;">CSV</span>
+                <span class="button" id="load" style="display: none;">Load</span>
             </div>
 
-            <div class="process">
-                <div class="report" id="loadResult"></div>
-                <span class="button disabled" id="next">Wprowadź następne</span>
+            <div class="panel" style="display: none;">
+                <div class="background">Load</div>
+                <div class="report" id="load-result"></div>
+                <span class="button" id="back">Powrót</span>
             </div>
         </div>
 

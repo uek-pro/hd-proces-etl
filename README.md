@@ -33,12 +33,12 @@ CREATE TABLE IF NOT EXISTS reviews (
     pros TEXT,
     cons TEXT,
     summary TEXT,
-    stars_count INTEGER,
+    starsCount INTEGER,
     author TEXT,
     date TEXT, -- date? --
-    is_recommended TEXT, -- boolean? --
-    positive_votes_count INTEGER,
-    negative_votes_count INTEGER
+    isRecommended TEXT, -- boolean? --
+    positiveVotesCount INTEGER,
+    negativeVotesCount INTEGER
 );
 ```
 
@@ -96,8 +96,6 @@ parseReview() | review - element strony internetowej | Review | Metoda wyciągaj
 
 ##### controller
 
-##### AppStatus
-
 ##### _Events_
 
 #### Serwer
@@ -113,6 +111,8 @@ dropTables() ||| Usunięcie wszystkich tabel
 insertProductIfNotExist($oProduct) | obiekt Product (js) | bool | Dodanie produktu, jeżeli jeszcze takowego nie ma, do bazy danych
 insertReviewsIfNotExists($oReviews, $iProductId) | obiekt Review (js), identyfikator produktu | int - liczba dodanych opinii | Dodanie opinii o podanym produkcie do bazy danych, których jeszcze w niej nie ma
 deleteProductWithReviews($iProductId) | identyfikator produktu | bool | Usunięcie produktu z bazy danych o podanym identyfikatorze wraz z opiniami na jego temat
+selectProductAndHisReviews($iProductId) | identyfikator produktu | array[\]\[\] | Pobranie produktu oraz z jego opiniami.
+selectProducts() || array[] | Pobranie pól `product_id` oraz `model` wszystkich produktów
 
 ##### SQLite\_Connection.php (SQLite\_Connection : IConnection)
 
@@ -127,8 +127,11 @@ Skrypt obsługujący bazę danych oraz umożliwiający pobieranie zawartości st
 
 Protokół | Metoda | Parametry | Wartość zwracana | Działanie
 -------- | ------ | --------- | ---------------- | ---------
-get-item-page | POST | itemId - identyfikator produktu | message, success, result | Zapytanie o stronę o podanym, jako parametr, identyfikatorze produktu, a następnie zwrócenie jej kodu tekstowego.
-insert-product-data | POST ||||
+get-product-page | POST | productId | message, success, result | Zapytanie o stronę o podanym, jako parametr, identyfikatorze produktu, a następnie zwrócenie jej kodu tekstowego.
+insert-product-data | POST | productData | message, success, result | Zapytanie o zapis danych (produktu i jego opinii) w bazie danych. |
+get-product-data | POST | productId | message, success, result | Zapytanie o wszystkie dane produktu o podanym w parametrze identyfikatorze. |
+get-products-list | POST | | message, success, result | Zapytanie o pobranie danych (product_id, model) o wszystkich produktach. |
+||GET| obsluga, [productId] | message | W zależności od wartości parametru `obsluga` następuje, usunięcie całej zawartości bazy lub produktu o podanym w parametrze identyfikatorze wraz z opiniami na jego temat.
 
 ## Dokumentacja użytkownika
 
