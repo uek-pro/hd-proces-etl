@@ -9,7 +9,7 @@ const model = {
     pageCount: 0,
     rawData: [], // extraction
     processedData: [], // transformation
-    extract(counter = 1) {
+    extract(isWholeProcess = false, counter = 1) {
 
         const parent = this;
         if (parent.pageCount == 0) {
@@ -24,6 +24,8 @@ const model = {
 
             controller.changeAppStatus(AppStatus.EXTRACTED);
             controller.stopIndicator();
+            if (isWholeProcess)
+                this.transform(true);
             return;
         }
 
@@ -37,11 +39,11 @@ const model = {
             },
             success: function (response) {
                 parent.rawData.push(response.result);
-                parent.extract(counter + 1);
+                parent.extract(isWholeProcess, counter + 1);
             }
         });
     },
-    transform() {
+    transform(isWholeProcess = false) {
 
         controller.startIndicator();
 
@@ -62,6 +64,8 @@ const model = {
 
         controller.changeAppStatus(AppStatus.TRANSFORMED);
         controller.stopIndicator();
+        if (isWholeProcess)
+            this.load();
     },
     load() {
 

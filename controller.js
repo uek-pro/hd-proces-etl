@@ -41,9 +41,9 @@ const controller = {
     stopIndicator() {
         this.view.hideIndicator();
     },
-    extractData() {
+    extractData(isWholeProcess = false) {
         this.startIndicator();
-        this.model.extract();
+        this.model.extract(isWholeProcess);
     },
     transformData() {
         this.model.transform();

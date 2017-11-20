@@ -27,7 +27,8 @@ handles.fromDatabase.addEventListener('click', function () {
 // zdarzenie kliknięcia w przycisk ETL
 handles.etl = document.getElementById('etl');
 handles.etl.addEventListener('click', function () {
-    // TODO: to implement (w metodach dodać parametr isAutoNextStage)
+    $(event.target).addClass("disabled");
+    controller.extractData(true);
 });
 
 // zdarzenie kliknięcia w przycisk Extract

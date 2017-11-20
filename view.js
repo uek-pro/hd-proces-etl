@@ -42,12 +42,14 @@ const view = {
     },
     updateButtonsStatus(state) {
         if (state == AppStatus.NONE) {
+            $(handles.etl).addClass('disabled');
             $(handles.extract).addClass('disabled');
             $(handles.transform).addClass('disabled');
             $(handles.load).addClass('disabled');
             $(handles.nextSearch).addClass('disabled');
             
         } else if (state == AppStatus.FOUNDED) {
+            $(handles.etl).removeClass('disabled');
             $(handles.extract).removeClass('disabled');
             
         } else if (state == AppStatus.EXTRACTED) {
