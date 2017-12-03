@@ -1,18 +1,9 @@
 const controller = {
-    showProductInfoFromUrl(productId) {
-        if (!this.model.isInitialState()) {
-            this.clearData();
-        }
-        this.model.setProductInfoFromUrl(productId);
-    },
     showProductInfoFromDatabase(productId) {
         if (!this.model.isInitialState()) {
             this.clearData();
         }
         this.model.getProductDataFromDatabase(productId);
-    },
-    displayProductInfo(product) {
-        this.view.displayProductInfo(product);
     },
     showMessage(textContent) {
         this.view.displayMessage(textContent);
@@ -20,41 +11,37 @@ const controller = {
     hideMessage() {
         this.view.clearMessage();
     },
+    displayProductInfo(product) {
+        this.view.displayProductInfo(product);
+    },
     showAllReviews(reviews) {
         this.view.appendAllReviews(reviews);
     },
-    showExtractReport(pageCount) {
-        this.view.displayExtractReport(pageCount);
+    showExtractReport(data) {
+        this.view.displayExtractReport(data);
     },
-    showLoadReport(reviewsCount) {
-        this.view.displayLoadReport(reviewsCount);
+    showTransformReport(data) {
+        this.view.displayTransformReport(data);
     },
-    setElementAvailability(handle, isEnabled) {
-        this.view.setElementAvailability(handle, isEnabled);
+    showLoadReport(data) {
+        this.view.displayLoadReport(data);
     },
-    setElementVisibility(handle, isVisible) {
-        this.view.setElementVisibility(handle, isVisible);
+    setElementsVisibility(isVisible, ...handles) {
+        this.view.setElementsVisibility(isVisible, handles);
     },
     changeMode(mode) {
-        if (mode == Mode.CENEO) {
-            this.view.setElementActivity(handles.databaseMenu, false);
-            this.view.setElementActivity(handles.urlMenu, true);
-            this.view.setElementVisibility(handles.databaseForm, false);
-            this.view.setElementVisibility(handles.urlForm, true);
-            this.view.setElementVisibility(handles.loadProduct, false);
-            this.view.setElementVisibility(handles.searchProduct, true);
-        } else {
-            this.view.setElementActivity(handles.urlMenu, false);
-            this.view.setElementActivity(handles.databaseMenu, true);
-            this.view.setElementVisibility(handles.urlForm, false);
-            this.view.setElementVisibility(handles.databaseForm, true);
-            this.view.setElementVisibility(handles.searchProduct, false);
-            this.view.setElementVisibility(handles.loadProduct, true);
-        }
         this.model.mode = mode;
-    },
-    showPanel(panelHandle, buttonHandleArray = []) {
-        this.view.showPanel(panelHandle, buttonHandleArray);
+        if (mode == Mode.CENEO) {
+            this.view.setElementActivity(false, handles.databaseMenu);
+            this.view.setElementActivity(true, handles.urlMenu);
+            this.setElementsVisibility(false, handles.databaseForm, handles.loadProduct);
+            this.setElementsVisibility(true, handles.urlForm, handles.etl, handles.extract);
+        } else {
+            this.view.setElementActivity(false, handles.urlMenu);
+            this.view.setElementActivity(true, handles.databaseMenu);
+            this.setElementsVisibility(false, handles.urlForm, handles.etl, handles.extract);
+            this.setElementsVisibility(true, handles.databaseForm, handles.loadProduct);
+        }
     },
     updateProductsAsync() {
         this.model.updateProductsFromDatabase();
@@ -65,9 +52,12 @@ const controller = {
     stopIndicator() {
         this.view.hideIndicator();
     },
-    extractData(isWholeProcess = false) {
+    extractData(productId, isWholeProcess = false) {
         this.startIndicator();
-        this.model.extract(isWholeProcess);
+        if (!this.model.isInitialState()) {
+            this.clearData();
+        }
+        this.model.extract(productId, isWholeProcess);
     },
     transformData() {
         this.model.transform();
@@ -77,16 +67,50 @@ const controller = {
     },
     clearData() {
         this.model.clear();
-        this.view.setElementVisibility(handles.panelHandleArray[0], false);
-        this.view.setElementVisibility(handles.panelHandleArray[1], false);
-        this.view.setElementVisibility(handles.panelHandleArray[2], false);
-        this.view.setElementVisibility(handles.panelHandleArray[3], false);
-        this.view.setElementVisibility(handles.etl, false);
-        this.view.setElementVisibility(handles.extract, false);
-        this.view.setElementVisibility(handles.transform, false);
-        this.view.setElementVisibility(handles.load, false);
+        this.setElementsVisibility(
+            false,
+            handles.back,
+            handles.panelHandleArray[2],
+            handles.load,
+            handles.panelHandleArray[1],
+            handles.transform,
+            handles.panelHandleArray[0],
+        );
+        this.model.mode == Mode.CENEO ? this.setElementsVisibility(
+            true,
+            handles.etl,
+            handles.extract
+        ) : this.setElementsVisibility(
+            true,
+            handles.loadProduct,
+        );
         this.view.clearReports();
-        this.view.clearProductInfo();
+    },
+    saveReviews(type) { // TODO: dodać na końcu raportu z transform
+        if (type == 'json') {
+            DownloadHelper.download(this.model.productId + '.json', JSON.stringify(this.model.getProcessedData()));
+        } else if (type == 'csv') { // NOTE: brak polskich znaków
+
+            const data = this.model.getProcessedData();
+            let csvContent = '';//"data:text/csv;charset=utf-8,";
+            console.log(data);
+            for (let i = 0, k = data.length; i < k; i++) {
+                let row = (
+                    '"' + data[i].id + '","' +
+                    data[i].pros + '","' +
+                    data[i].cons + '","' +
+                    data[i].summary + '","' +
+                    data[i].starsCount + '","' +
+                    data[i].author + '","' +
+                    data[i].date + '","' +
+                    data[i].isRecommended + '","' +
+                    data[i].positiveVotesCount + '","' +
+                    data[i].negativeVotesCount + '"'
+                );
+                csvContent += row + "\r\n";
+            }
+            DownloadHelper.download(this.model.productId + '.csv', csvContent);
+        }
     },
     model: model,
     view: view

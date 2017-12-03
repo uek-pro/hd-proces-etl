@@ -1,180 +1,38 @@
-body {
-    color: #333;
-    font-size: 1em;
-    font-family: 'Roboto', Arial, sans-serif;
-}
-
-a {
-    color: #6a84ca;
-    text-decoration: none;
-}
-
-img:hover {
-    opacity: 0.85;
-}
-
-p, h1, h2 {
-    margin: 0;
-}
-
-h1, h2 {
-    font-weight: 300;
-}
-
-.header {
-    position: relative;
-}
-
-.logo {
-    margin: 20px 0;
-}
-
-.source {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.source a {
-    color: #aaa;
-    font-weight: 300;
-    text-decoration: none;
-}
-
-.source img {
-    margin-left: 4px;
-    vertical-align: middle;
-}
-
-.head {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.head > p {
-    font-weight: 300;
-    font-size: 0.85em;
-}
-
-.menu {
-    text-align: center;
-    margin: 40px 0;
-}
-
-.button {
-    text-transform: uppercase;
-    cursor: pointer;
-    font-size: 1.250em;
-    font-weight: 600;
-    margin: 0 50px;
-    padding: 12px;
-    display: inline-block;
-    width: 160px;
-}
-
-.button:hover {
-    color: #6a84ca;
-}
-
-.main {
-    text-align: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    margin-bottom: 60px;
-}
-
-.form {
-    width: 260px;
-    margin: 10px auto;
-    position: relative;
-}
-
-.form label {
-    margin:0 0 3px 0;
-    padding: 0;
-    display: block;
-    font-weight: 300;
-    text-align: left;
-}
-
-.form input[type=number], select {
-    box-sizing: border-box;
-    border:1px solid #6a84ca;
-    padding: 7px;
-    margin: 0px;
-    width: 100%;
-    height: 34px;
-}
-
-.form input[type=button] {
-    position: absolute;
-    left: -40px;
-    height: 34px;
-    width: 34px;
-    bottom: 0;
-}
-
-.disabled {
-    pointer-events: none;
-    opacity: 0.35;
-}
-
-.active {
-    background-color: #000;
-    color: #fff;
-    pointer-events: none;
-}
-
-#message {
-    height: 20px;
-    margin: 4px 0;
-    font-weight: 300;
-    color: #6a84ca;
-}
-
-dl {
-    margin: 10px;
-    text-align: left;
-    display: grid;
-    grid-template-columns: max-content auto;
-    position: relative;
-    z-index: 1;
-}
-
-dt {
-    font-weight: 600;
-    grid-column-start: 1;
-}
-
-dd {
-    grid-column-start: 2;
-}
-
-.panel {
-    position: relative;
-}
-
-.panel .background {
-    position: absolute;
-    right: 25px;
-    font-weight: 900;
-    text-transform: uppercase;
-    font-size: 76px;
-    color: #fff;
-    user-select: none;
-}
-
-.report {
-    margin: 10px;
-    padding: 10px;
-    background-color: #ddd;
-}
-
-#indicator-place {
-    margin: 30px auto;
-    width: 60px;
-    height: 60px;
-}
+body {color: #333;font-size: 1em;font-family: 'Roboto', Arial, sans-serif;}
+a {color: #6a84ca;text-decoration: none;}
+img:hover {opacity: 0.85;}
+p, h1, h2 {margin: 0;}
+h1, h2 {font-weight: 300;}
+.header {position: relative;}
+.logo {margin: 20px 0;}
+object {pointer-events: none;}
+.source {position: absolute;top: 0;right: 0;}
+.source a {color: #aaa;font-weight: 300;text-decoration: none;}
+.source img {margin-left: 4px;vertical-align: middle;}
+.logo {display: block;width: 188px;height: 190px;margin: 20px auto;}
+.head {padding-top: 10px;text-align: center;margin-bottom: 60px;}
+.head a {display: block;}
+.head > p {font-weight: 300;font-size: 0.85em;}
+.menu {text-align: center;}
+.button {text-transform: uppercase;cursor: pointer;font-size: 1.250em;font-weight: 600;margin: 0 50px;padding: 12px;display: inline-block;width: 160px;}
+.button:hover {color: #6a84ca;}
+.main {text-align: center;max-width: 1200px;margin: 0 auto;margin-bottom: 60px;}
+.form {width: 260px;margin: 40px auto 20px;position: relative;}
+input, select {font-family: 'Roboto', Arial, sans-serif;}
+input[type=button] {width: 160px;height: 48px;border: 1px #6a84ca solid;background: #fff;font-weight: 600;cursor: pointer;font-size: 0.78em;text-transform: uppercase;margin: 36px 20px;}
+input[type=button]:hover {background: #6a84ca;color: #fff;}
+.form label {margin:0 0 3px 0;padding: 0;display: block;font-weight: 300;text-align: left;}
+.form input[type=number], select {box-sizing: border-box;border:1px solid #6a84ca;padding: 7px;margin: 0px;width: 100%;height: 34px;}
+#update-products {margin: 0;position: absolute;left: -108px;height: 34px;width: 102px;bottom: 0;}
+.active {background-color: #000;color: #fff;pointer-events: none;}
+#message {height: 20px;font-weight: 300;color: #6a84ca;}
+dl {margin: 10px;padding: 20px;text-align: left;display: grid;grid-template-columns: max-content auto;position: relative;z-index: 1;}
+dt {font-weight: 600;grid-column-start: 1;}
+dd {grid-column-start: 2;}
+.panel {position: relative;}
+.panel .background {position: absolute;right: 25px;font-weight: 900;text-transform: uppercase;font-size: 76px;color: #fff;user-select: none;}
+.report {margin: 10px;background-color: #ddd;}
+#indicator-place {margin: 30px auto;width: 60px;height: 60px;}
 
 /*
     https://github.com/tobiasahlin/SpinKit      
@@ -184,34 +42,12 @@ dd {
             <div class="cube2"></div>
         </div>
 */
-.spinner {
-    width: 60px;
-    height: 60px;
-    position: relative;
-}
 
-.cube1 {
-    background-color: #6a84ca;
-}
-
-.cube2 {
-    background-color: #f0e68c;
-}
-
-.cube1, .cube2 {
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
-    animation: sk-cubemove 1.8s infinite ease-in-out;
-}
-
-.cube2 {
-    -webkit-animation-delay: -0.9s;
-    animation-delay: -0.9s;
-}
+.spinner {width: 60px;height: 60px;position: relative;}
+.cube1 {background-color: #6a84ca;}
+.cube2 {background-color: #f0e68c;}
+.cube1, .cube2 {width: 15px;height: 15px;position: absolute;top: 0;left: 0;-webkit-animation: sk-cubemove 1.8s infinite ease-in-out;animation: sk-cubemove 1.8s infinite ease-in-out;}
+.cube2 {-webkit-animation-delay: -0.9s;animation-delay: -0.9s;}
 
 @-webkit-keyframes sk-cubemove {
     25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }

@@ -1,33 +1,33 @@
 const model = {
     mode: Mode.CENEO,
-    productId: 0,
+    productId: -1,
     product: null,
     reviews: null,
-    pageCount: 0,
+    pageCount: 1,
     rawData: [], // extraction
     processedData: [], // transformation
-    extract(isWholeProcess = false, counter = 1) {
-
+    getProcessedData() {
+        return this.processedData;
+    },
+    isInitialState() {
+        return this.productId == -1 ? true : false;
+    },
+    extract(productId, isWholeProcess = false, counter = 1) {
+        
         if (counter == 1) {
-            controller.setElementVisibility(handles.extract, false);
-            controller.setElementVisibility(handles.etl, false);
+            controller.setElementsVisibility(false, handles.extract, handles.etl);
         }
 
         const parent = this;
-        if (parent.pageCount == 0) {
-            controller.clearData();
-            controller.stopIndicator();
-            return;
-        }
-        else if (counter > parent.pageCount) {
+        if (counter > parent.pageCount) {
             console.log(this.rawData);
-            controller.showExtractReport(parent.pageCount);
+            controller.showExtractReport([parent.productId, parent.product.reviewsCount, parent.pageCount, isWholeProcess]);
             controller.stopIndicator();
             if (isWholeProcess) {
-                controller.showPanel(handles.panelHandleArray[1], []);
+                controller.setElementsVisibility(true, handles.panelHandleArray[0]);
                 this.transform(true);
             } else {
-                controller.showPanel(handles.panelHandleArray[1], [handles.transform]);
+                controller.setElementsVisibility(true, handles.panelHandleArray[0], handles.transform);
             }
             return;
         }
@@ -37,19 +37,42 @@ const model = {
             method: 'post',
             data: {
                 protocol: 'get-product-page',
-                productId: parent.productId,
+                productId: productId,
                 reviewsPageNumber: counter
             },
             success: function (response) {
+
+                if (counter == 1) {
+                    const doc = new DOMParser().parseFromString(response.result, "text/html");
+                    parent.product = ProductParser.parseProduct(doc);
+                    parent.pageCount = parent.product.reviewsCount > 0 ? Math.ceil(parent.product.reviewsCount / 10) : 1;
+                    parent.productId = productId;
+                    // TODO: sprawdzić czy jest sens przeprowadzania procesu ETL (productId jest kategorią)
+                    controller.showMessage(response.message);
+                    setTimeout(
+                        function () {
+                            controller.hideMessage();
+                        },
+                        5000
+                    );
+                }
+
                 parent.rawData.push(response.result);
-                parent.extract(isWholeProcess, counter + 1);
+                parent.extract(productId, isWholeProcess, counter + 1);
+            },
+            error: function(e) {
+                controller.showMessage('Wystąpił błąd podczas pobierania informacji o produkcie. (' + e.status + ')');
+                controller.stopIndicator();
+                return;
             }
         });
     },
     transform(isWholeProcess = false) {
 
-        controller.setElementVisibility(handles.transform, false);
+        controller.setElementsVisibility(false, handles.transform);
         controller.startIndicator();
+
+        controller.displayProductInfo(this.product);
 
         for (let i = 0, k = this.rawData.length; i < k; i++) {
 
@@ -67,16 +90,13 @@ const model = {
         controller.showAllReviews(this.processedData);
 
         controller.stopIndicator();
-        if (isWholeProcess) {
-            controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV]);
+        controller.setElementsVisibility(true, handles.panelHandleArray[1], handles.load);
+        if (isWholeProcess)
             this.load();
-        } else {
-            controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV, handles.load]);
-        }
     },
     load() {
 
-        controller.setElementVisibility(handles.load, false);
+        controller.setElementsVisibility(false, handles.load);
         controller.startIndicator();
         const parent = this;
 
@@ -91,52 +111,20 @@ const model = {
 
                 console.log(response.message);
                 controller.showLoadReport(response.result == null ? 0 : response.result);
-
-                controller.showPanel(handles.panelHandleArray[3], []);
+                controller.setElementsVisibility(true, handles.panelHandleArray[2], handles.back);
+            },
+            complete: function() {
                 controller.stopIndicator();
             }
         });
     },
     clear() {
-        this.productId = 0;
+        this.productId = -1;
         this.product = null;
         this.reviews = null;
-        this.pageCount = 0;
+        this.pageCount = 1;
         this.rawData = [];
         this.processedData = [];
-    },
-    setProductInfoFromUrl(productId) {
-        controller.startIndicator();
-        const parent = this;
-
-        $.ajax({
-            url: 'http://localhost/web/hd-proces-etl/app_service.php',
-            method: 'post',
-            data: {
-                protocol: 'get-product-page',
-                productId: productId
-            },
-            success: function (response) {
-
-                const doc = new DOMParser().parseFromString(response.result, "text/html");
-                parent.product = ProductParser.parseProduct(doc);
-                parent.pageCount = parent.product.reviewsCount > 0 ? Math.ceil(parent.product.reviewsCount / 10) : 0;
-                parent.productId = productId;
-
-                controller.showMessage(response.message);
-                if (response.success) {
-                    controller.displayProductInfo(parent.product);
-                    controller.showPanel(handles.panelHandleArray[0], [handles.etl, handles.extract]);
-                    setTimeout(
-                        function () {
-                            controller.hideMessage();
-                        },
-                        5000
-                    );
-                }
-                controller.stopIndicator();
-            }
-        });
     },
     getProductDataFromDatabase(productId) {
         controller.startIndicator();
@@ -159,10 +147,8 @@ const model = {
 
                     controller.displayProductInfo(parent.product);
                     controller.showAllReviews(parent.processedData);
+                    controller.setElementsVisibility(true, handles.panelHandleArray[1], handles.back);
 
-                    controller.showPanel(handles.panelHandleArray[0], []);
-                    controller.showPanel(handles.panelHandleArray[2], [handles.toJSON, handles.toCSV]);
-                    controller.showPanel(handles.panelHandleArray[3], []);
                     setTimeout(
                         function () {
                             controller.hideMessage();
@@ -170,13 +156,15 @@ const model = {
                         5000
                     );
                 }
-                controller.stopIndicator();
                 console.log(parent);
+            },
+            error: function(e) {
+                controller.showMessage('Wystąpił błąd podczas pobierania informacji o produkcie. (' + e.status + ')');
+            },
+            complete: function() {
+                controller.stopIndicator();
             }
         });
-    },
-    isInitialState() {
-        return this.productId == 0 ? true : false;
     },
     updateProductsFromDatabase() {
         controller.startIndicator();
@@ -191,14 +179,17 @@ const model = {
             success: function (response) {
 
                 console.log(response);
-                
-                $(handles.productSelect).empty();
-                for (let i = 0, k = response.result.length; i < k; i++) {
-                    const opt = document.createElement('option');
-                    opt.value = response.result[i].id;
-                    opt.innerHTML = response.result[i].model;
-                    handles.productSelect.appendChild(opt);
+                if (response.success) {
+                    $(handles.productSelect).empty();
+                    for (let i = 0, k = response.result.length; i < k; i++) {
+                        const opt = document.createElement('option');
+                        opt.value = response.result[i].id;
+                        opt.innerHTML = response.result[i].model;
+                        handles.productSelect.appendChild(opt);
+                    }
                 }
+            },
+            complete: function() {
                 controller.stopIndicator();
             }
         });

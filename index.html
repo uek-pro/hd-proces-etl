@@ -20,9 +20,14 @@
 <body>
     <div class="header">
         <div class="head">
-            <a href="">
-                <img class="logo" src="logo.jpg" alt="Proces ETL - Projekt" />
-            </a>
+            <div class="logo">
+                <a href="">
+                    <object class="logo" type="image/svg+xml" data="logo.svg">
+                        Logo
+                        <!-- fallback image in CSS -->
+                    </object>
+                </a>
+            </div>
             <h1>Projekt. Proces ETL</h1>
             <p>DMM 2017</p>
         </div>
@@ -47,43 +52,39 @@
         </div>
 
         <div class="form" id="database-form" style="display: none;">
-            <input id="update-products" type="button" value="\/" />
+            <input id="update-products" type="button" value="Odśwież" />
             <label for="select-product">Wybierz produkt z bazy:</label>
             <select id="select-product"></select>
         </div>
-
-        <span class="button" id="search-product">Pobierz</span>
-        <span class="button" id="load-product" style="display: none;">Wczytaj</span>
-
+        
         <p id="message"></p>
 
+        <input id="etl" type="button" value="ETL" />
+        <input id="extract" type="button" value="Extract" />
+        <input id="load-product" type="button" value="Wczytaj" style="display: none;" />
+
         <div class="processes">
-            <div class="panel" style="display: none;">
-                <div class="background">Product</div>
-                <div class="report" id="product-result"></div>
-                <span class="button" id="etl" style="display: none;">ETL</span>
-                <span class="button" id="extract" style="display: none;">Extract</span>
-            </div>
 
             <div class="panel" style="display: none;">
                 <div class="background">Extract</div>
                 <div class="report" id="extract-result"></div>
-                <span class="button" id="transform" style="display: none;">Transform</span>
             </div>
+
+            <input id="transform" type="button" value="Transform" style="display: none;" />
 
             <div class="panel" style="display: none;">
                 <div class="background">Transform</div>
                 <div class="report" id="transform-result"></div>
-                <span class="button" id="to-json" style="display: none;">JSON</span>
-                <span class="button" id="to-csv" style="display: none;">CSV</span>
-                <span class="button" id="load" style="display: none;">Load</span>
             </div>
+
+            <input id="load" type="button" value="Load" style="display: none;" />
 
             <div class="panel" style="display: none;">
                 <div class="background">Load</div>
                 <div class="report" id="load-result"></div>
-                <span class="button" id="back">Powrót</span>
             </div>
+
+            <input id="back" type="button" value="Powrót" style="display: none;" />
         </div>
 
         <div id="indicator-place"></div>
