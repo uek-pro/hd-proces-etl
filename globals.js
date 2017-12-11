@@ -44,7 +44,7 @@ const ProductParser = {
         const modelElement = doc.querySelector("div.product-content .product-name");
         const model = modelElement != null ? modelElement.textContent : "";
 
-        const remarksElement = doc.querySelector("div.product-content .ProductSublineTags");
+        const remarksElement = doc.querySelector("div.product-content .ProductSublineTags"); // NOTE: prawdopodobnie prowadzącej chodzi o warianty? (#js_product-families)
         const remarks = remarksElement != null ? remarksElement.textContent : "";
 
         const reviewsCountElement = doc.querySelector("span[itemprop=reviewCount]");

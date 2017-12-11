@@ -1,5 +1,5 @@
 const handles = {};
-handles.indicator = document.getElementById('indicator-place');
+handles.indicator = document.getElementById('indicator');
 handles.productCode = document.getElementById('product-code');
 handles.productSelect = document.getElementById('select-product');
 handles.urlMenu = document.getElementById('url-menu');

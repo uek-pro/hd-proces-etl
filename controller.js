@@ -11,17 +11,14 @@ const controller = {
     hideMessage() {
         this.view.clearMessage();
     },
-    displayProductInfo(product) {
-        this.view.displayProductInfo(product);
+    displayProductInfo(product, isFromDatabase) {
+        this.view.displayProductInfo(product, isFromDatabase);
     },
-    showAllReviews(reviews) {
-        this.view.appendAllReviews(reviews);
+    showAllReviews(reviews, isFromDatabase) {
+        this.view.appendAllReviews(reviews, isFromDatabase);
     },
     showExtractReport(data) {
         this.view.displayExtractReport(data);
-    },
-    showTransformReport(data) {
-        this.view.displayTransformReport(data);
     },
     showLoadReport(data) {
         this.view.displayLoadReport(data);
@@ -86,7 +83,7 @@ const controller = {
         );
         this.view.clearReports();
     },
-    saveReviews(type) { // TODO: dodać na końcu raportu z transform
+    saveAllReviews(type) {
         if (type == 'json') {
             DownloadHelper.download(this.model.productId + '.json', JSON.stringify(this.model.getProcessedData()));
         } else if (type == 'csv') { // NOTE: brak polskich znaków
@@ -95,22 +92,39 @@ const controller = {
             let csvContent = '';//"data:text/csv;charset=utf-8,";
             console.log(data);
             for (let i = 0, k = data.length; i < k; i++) {
-                let row = (
-                    '"' + data[i].id + '","' +
-                    data[i].pros + '","' +
-                    data[i].cons + '","' +
-                    data[i].summary + '","' +
-                    data[i].starsCount + '","' +
-                    data[i].author + '","' +
-                    data[i].date + '","' +
-                    data[i].isRecommended + '","' +
-                    data[i].positiveVotesCount + '","' +
-                    data[i].negativeVotesCount + '"'
-                );
-                csvContent += row + "\r\n";
+                if (data[i] != null) {
+                    let row = (
+                        '"' + data[i].id + '","' +
+                        data[i].pros + '","' +
+                        data[i].cons + '","' +
+                        data[i].summary + '","' +
+                        data[i].starsCount + '","' +
+                        data[i].author + '","' +
+                        data[i].date + '","' +
+                        data[i].isRecommended + '","' +
+                        data[i].positiveVotesCount + '","' +
+                        data[i].negativeVotesCount + '"'
+                    );
+                    csvContent += row + "\r\n";
+                }
             }
             DownloadHelper.download(this.model.productId + '.csv', csvContent);
         }
+    },
+    saveReview(reviewId) {
+        const reviews = this.model.getProcessedData();
+        if (reviews[reviewId] != null) {
+            DownloadHelper.download(reviews[reviewId].id + '.json', JSON.stringify(reviews[reviewId]));
+        }
+    },
+    deleteProductData(productId) {
+        this.model.deleteProductData(productId);
+    },
+    deleteReview(reviewId, elementId) {
+        this.model.deleteReview(reviewId, elementId);
+    },
+    fadeReview(reviewId) {
+        this.view.fadeReview(reviewId);
     },
     model: model,
     view: view

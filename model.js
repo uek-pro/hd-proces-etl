@@ -47,14 +47,25 @@ const model = {
                     parent.product = ProductParser.parseProduct(doc);
                     parent.pageCount = parent.product.reviewsCount > 0 ? Math.ceil(parent.product.reviewsCount / 10) : 1;
                     parent.productId = productId;
-                    // TODO: sprawdzić czy jest sens przeprowadzania procesu ETL (productId jest kategorią)
-                    controller.showMessage(response.message);
+
+                    let isValidProductId = true;
+                    if (!$.isNumeric(parent.product.id)) {
+                        isValidProductId = false;
+                    }
+                    //console.log(isValidProductId, $.isNumeric(parent.product.id), parent.product.id);
+                    controller.showMessage(response.message + (!isValidProductId ? ', ale nie jest to produkt, lecz prawdopodobnie kategoria produktu.' : ''));
                     setTimeout(
                         function () {
                             controller.hideMessage();
                         },
                         5000
                     );
+
+                    if (!isValidProductId) {
+                        controller.stopIndicator();
+                        controller.setElementsVisibility(true, handles.extract, handles.etl);
+                        return;
+                    }
                 }
 
                 parent.rawData.push(response.result);
@@ -72,7 +83,7 @@ const model = {
         controller.setElementsVisibility(false, handles.transform);
         controller.startIndicator();
 
-        controller.displayProductInfo(this.product);
+        controller.displayProductInfo(this.product, false);
 
         for (let i = 0, k = this.rawData.length; i < k; i++) {
 
@@ -87,7 +98,7 @@ const model = {
         }
         // NOTE: czy napewno zawsze pobrane zostają wszystkie opinie?
         console.log(this.processedData);
-        controller.showAllReviews(this.processedData);
+        controller.showAllReviews(this.processedData, false);
 
         controller.stopIndicator();
         controller.setElementsVisibility(true, handles.panelHandleArray[1], handles.load);
@@ -110,7 +121,11 @@ const model = {
             success: function (response) {
 
                 console.log(response.message);
-                controller.showLoadReport(response.result == null ? 0 : response.result);
+                controller.showLoadReport([
+                    response.result.isAddedProduct == null ? 0 : response.result.isAddedProduct,
+                    parent.product.reviewsCount - response.result.reviewsAddedCount,
+                    response.result.reviewsAddedCount
+                ]);
                 controller.setElementsVisibility(true, handles.panelHandleArray[2], handles.back);
             },
             complete: function() {
@@ -145,8 +160,8 @@ const model = {
                     parent.productId = productId;
                     parent.processedData = response.result.reviews;
 
-                    controller.displayProductInfo(parent.product);
-                    controller.showAllReviews(parent.processedData);
+                    controller.displayProductInfo(parent.product, true);
+                    controller.showAllReviews(parent.processedData, true);
                     controller.setElementsVisibility(true, handles.panelHandleArray[1], handles.back);
 
                     setTimeout(
@@ -188,6 +203,67 @@ const model = {
                         handles.productSelect.appendChild(opt);
                     }
                 }
+            },
+            complete: function() {
+                controller.stopIndicator();
+            }
+        });
+    },
+    deleteProductData(productId) {
+        controller.startIndicator();
+        const parent = this;
+
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'delete-product-data',
+                productId: productId
+            },
+            success: function (response) {
+
+                console.log(response);
+                controller.showMessage(response.message);
+                if (response.success) {
+                    controller.clearData();
+                }
+                setTimeout(
+                    function () {
+                        controller.hideMessage();
+                    },
+                    5000
+                );
+            },
+            complete: function() {
+                controller.stopIndicator();
+            }
+        });
+    },
+    deleteReview(reviewId, elementId) {
+        controller.startIndicator();
+        const parent = this;
+
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'delete-review',
+                reviewId: reviewId
+            },
+            success: function (response) {
+
+                console.log(response);
+                controller.showMessage(response.message);
+                if (response.success) {
+                    parent.processedData[elementId] = null;
+                    controller.fadeReview(elementId);
+                }
+                setTimeout(
+                    function () {
+                        controller.hideMessage();
+                    },
+                    3000
+                );
             },
             complete: function() {
                 controller.stopIndicator();

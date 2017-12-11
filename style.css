@@ -1,5 +1,6 @@
 body {color: #333;font-size: 1em;font-family: 'Roboto', Arial, sans-serif;}
-a {color: #6a84ca;text-decoration: none;}
+a {color: #6a84ca;text-decoration: none;cursor:pointer;}
+a:hover {text-decoration:underline;}
 img:hover {opacity: 0.85;}
 p, h1, h2 {margin: 0;}
 h1, h2 {font-weight: 300;}
@@ -32,7 +33,7 @@ dd {grid-column-start: 2;}
 .panel {position: relative;}
 .panel .background {position: absolute;right: 25px;font-weight: 900;text-transform: uppercase;font-size: 76px;color: #fff;user-select: none;}
 .report {margin: 10px;background-color: #ddd;}
-#indicator-place {margin: 30px auto;width: 60px;height: 60px;}
+#indicator {margin: 30px auto;width: 60px;height: 60px;}
 
 /*
     https://github.com/tobiasahlin/SpinKit      

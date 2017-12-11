@@ -33,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 require_once 'database\SQLite_Connection.php';
                 $database = SQLite_Connection::prepareDatabase();
                 
-                $database->insertProductIfNotExist($json->{'product'});
-                $addedCount = $database->insertReviewsIfNotExists($json->{'reviews'}, $json->{'product'}->{'id'});
+                $result['isAddedProduct'] = $database->insertProductIfNotExist($json->{'product'});
+                $result['reviewsAddedCount'] = $database->insertReviewsIfNotExists($json->{'reviews'}, $json->{'product'}->{'id'});
 
-                $response = showInformation("Informacje o produkcie zostały zapisane w bazie danych", true, $addedCount);
+                $response = showInformation("Informacje o produkcie zostały zapisane w bazie danych", true, $result);
             } else {
                 $response = showInformation("Proszę podać informacje o produkcie, które mają znaleść się w bazie danych", false);
             }
@@ -70,6 +70,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = showInformation("Wystąpił błąd podczas pobierania produktów", false);
             }
 
+        } else if ($_POST['protocol'] == 'delete-product-data') {
+            
+            if (isset($_POST['productId']) && ctype_digit($_POST['productId'])) {
+
+                require_once 'database\SQLite_Connection.php';
+                $database = SQLite_Connection::prepareDatabase();
+
+                $result = $database->deleteProductWithReviews($_POST['productId']);
+                if ($result)
+                    $response = showInformation("Usunięto dane produktu o id " . $_POST['productId'], true);
+                else 
+                    $response = showInformation("Wystąpił błąd podczas usuwania produktu o id " . $_POST['productId'], false);
+
+            } else {
+                $response = showInformation("Proszę podać prawidłowy identyfikator produktu", false);
+            }
+
+        } else if ($_POST['protocol'] == 'delete-review') {
+            
+            if (isset($_POST['reviewId']) && ctype_digit($_POST['reviewId'])) {
+
+                require_once 'database\SQLite_Connection.php';
+                $database = SQLite_Connection::prepareDatabase();
+
+                $result = $database->deleteReview($_POST['reviewId']);
+                if ($result)
+                    $response = showInformation("Usunięto opinię o id " . $_POST['reviewId'], true);
+                else 
+                    $response = showInformation("Wystąpił błąd podczas usuwania opinii o id " . $_POST['reviewId'], false);
+
+            } else {
+                $response = showInformation("Proszę podać prawidłowy identyfikator opinii", false);
+            }
+
         } else {
             $response = showInformation("Ale o co chodzi?", true);
         }
@@ -78,31 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     echo json_encode($response);
-
-} else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
-    if (isset($_GET['obsluga'])) {
-
-        require_once 'database\SQLite_Connection.php';
-        $database = SQLite_Connection::prepareDatabase();
-
-        if ($_GET['obsluga'] == 'del123') {
-            
-            if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
-                
-                $result = $database->deleteProductWithReviews($_GET['id']);
-                if ($result)
-                    echo 'Usunięto dane produktu o id ' . $_GET['id'];
-                else 
-                    echo 'Wystąpił błąd podczas usuwania produktu o id ' . $_GET['id'];
-            }
-            
-        } else if ($_GET['obsluga'] == '123456q') {
-
-            $database->dropTables();
-            echo 'Usunięcie rekordów bazy danych.';
-        }
-    }
 }
 
 function getPage($iItemId, $iReviewsPage = 0) {
