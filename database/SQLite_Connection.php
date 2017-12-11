@@ -43,8 +43,8 @@ class SQLite_Connection implements IConnection {
             summary TEXT,
             starsCount INTEGER,
             author TEXT,
-            date TEXT, -- date? --
-            isRecommended TEXT, -- boolean? --
+            date DATE,
+            isRecommended BOOLEAN,
             positiveVotesCount INTEGER,
             negativeVotesCount INTEGER
             )"
@@ -142,6 +142,15 @@ class SQLite_Connection implements IConnection {
             $this->pdo->rollBack();
             return false;
         }
+    }
+
+    public function deleteReview($iReviewId) {
+
+        $query = $this->pdo->prepare('DELETE FROM reviews WHERE review_id = :id');
+        $query->bindValue(':id', $iReviewId, PDO::PARAM_INT);
+        if ($query->execute() && $query->rowCount() > 0)
+            return true;
+        return false;
     }
 
     public function selectProductAndHisReviews($iProductId) {
