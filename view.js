@@ -30,7 +30,7 @@ const view = {
                 '<dt>Zalety produktu</dt><dd>' + reviews[i].pros + '</dd>' +
                 '<dt>Wady produktu</dt><dd>' + reviews[i].cons + '</dd>' +
                 '<dt>Podsumowanie opinii</dt><dd>' + reviews[i].summary + '</dd>' +
-                '<dt>Ocena produktu</dt><dd>' + reviews[i].starsCount + '</dd>' +
+                '<dt>Ocena produktu</dt><dd>' + (reviews[i].starsCount % 2 == 0 ? reviews[i].starsCount / 2 : (reviews[i].starsCount - 1) / 2 + '.5') + '</dd>' +
                 '<dt>Autor opinii</dt><dd>' + reviews[i].author + '</dd>' +
                 '<dt>Data wystawienia opinii</dt><dd>' + reviews[i].date + '</dd>' +
                 '<dt>Poleca / nie poleca</dt><dd>' + (reviews[i].isRecommended ? 'Poleca' : 'Nie poleca') + '</dd>' +

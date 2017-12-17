@@ -6,7 +6,7 @@ interface IConnection {
     public function createTablesIfNotExists();
     public function dropTables();
     public function insertProductIfNotExist($oProduct);
-    public function insertReviewsIfNotExists($oReviews, $iProductId);
+    public function insertReviewsIfNotExists($aReviews, $iProductId);
     public function deleteProductWithReviews($iProductId);
     public function deleteReview($iReviewId);
     public function selectProductAndHisReviews($iProductId);

@@ -22,6 +22,10 @@ object {pointer-events: none;}
 input, select {font-family: 'Roboto', Arial, sans-serif;}
 input[type=button] {width: 160px;height: 48px;border: 1px #6a84ca solid;background: #fff;font-weight: 600;cursor: pointer;font-size: 0.78em;text-transform: uppercase;margin: 36px 20px;}
 input[type=button]:hover {background: #6a84ca;color: #fff;}
+#etl {border-color:#507d2a;}
+#etl:hover {background: #507d2a;}
+#back {border-color:#dc143c;}
+#back:hover {background: #dc143c;}
 .form label {margin:0 0 3px 0;padding: 0;display: block;font-weight: 300;text-align: left;}
 .form input[type=number], select {box-sizing: border-box;border:1px solid #6a84ca;padding: 7px;margin: 0px;width: 100%;height: 34px;}
 #update-products {margin: 0;position: absolute;left: -108px;height: 34px;width: 102px;bottom: 0;}
@@ -35,43 +39,22 @@ dd {grid-column-start: 2;}
 .report {margin: 10px;background-color: #ddd;}
 #indicator {margin: 30px auto;width: 60px;height: 60px;}
 
-/*
-    https://github.com/tobiasahlin/SpinKit      
-    usage:
-        <div class="spinner">
-            <div class="cube1"></div>
-            <div class="cube2"></div>
-        </div>
-*/
-
+/* indicator from https://github.com/tobiasahlin/SpinKit */
 .spinner {width: 60px;height: 60px;position: relative;}
 .cube1 {background-color: #6a84ca;}
 .cube2 {background-color: #f0e68c;}
 .cube1, .cube2 {width: 15px;height: 15px;position: absolute;top: 0;left: 0;-webkit-animation: sk-cubemove 1.8s infinite ease-in-out;animation: sk-cubemove 1.8s infinite ease-in-out;}
 .cube2 {-webkit-animation-delay: -0.9s;animation-delay: -0.9s;}
-
 @-webkit-keyframes sk-cubemove {
     25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
     50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
     75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
     100% { -webkit-transform: rotate(-360deg) }
 }
-
 @keyframes sk-cubemove {
-    25% { 
-        transform: translateX(42px) rotate(-90deg) scale(0.5);
-        -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
-    } 50% { 
-        transform: translateX(42px) translateY(42px) rotate(-179deg);
-        -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
-    } 50.1% { 
-        transform: translateX(42px) translateY(42px) rotate(-180deg);
-        -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
-    } 75% { 
-        transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
-        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
-    } 100% { 
-        transform: rotate(-360deg);
-        -webkit-transform: rotate(-360deg);
-    }
+    25% { transform: translateX(42px) rotate(-90deg) scale(0.5);-webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);}
+    50% { transform: translateX(42px) translateY(42px) rotate(-179deg);-webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);}
+    50.1% { transform: translateX(42px) translateY(42px) rotate(-180deg);-webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);}
+    75% { transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);-webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);}
+    100% { transform: rotate(-360deg);-webkit-transform: rotate(-360deg);}
 }

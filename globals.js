@@ -35,7 +35,8 @@ const ProductParser = {
         const urlValueElement = doc.querySelector('meta[property="og:url"]');
         const productId = urlValueElement != null ? /www.ceneo.pl\/(.*)/g.exec(urlValueElement.attributes['content'].textContent)[1] : "";
 
-        const typeElement = doc.querySelector('nav dd > span:nth-child(2) > a > span'); // NOTE: czy może pobierać ostatnią podkategorię nth-last-child(2)?
+        // pobierana zostaje główna kategoria produktu
+        const typeElement = doc.querySelector('nav dd > span:nth-child(2) > a > span');
         const type = typeElement != null ? typeElement.textContent : "";
 
         const brandElement = doc.querySelector('meta[property="og:brand"]');
@@ -74,12 +75,22 @@ const ReviewsParser = {
         else
             isRecommended = false;
 
+        let starsCount = null;
+        const starsCountValue = review.querySelector('span.review-score-count').textContent.split('/')[0];
+        if (starsCountValue != null) {
+            if (starsCountValue.length > 1) {
+                starsCount = starsCountValue[0] * 2 + 1;
+            } else {
+                starsCount = starsCountValue * 2;
+            }
+        }
+
         return new Review(
             review.querySelector('button.vote-yes').attributes['data-review-id'].textContent,
             pros,
             cons,
             review.querySelector('p.product-review-body').textContent.slice(0, 200), // NOTE: tymczasowo
-            review.querySelector('span.review-score-count').textContent.split('/')[0],
+            starsCount,
             review.querySelector('div.reviewer-name-line').textContent.trim(),
             review.querySelector('span.review-time > time').attributes['datetime'].textContent,
             isRecommended,
@@ -90,9 +101,15 @@ const ReviewsParser = {
 }
 
 const DownloadHelper = {
-    download: function (filename, text) {
+    download: function (filename, text, encoding = 'utf8') {
+        let prefix;
+        if (encoding == 'utf8 w/ BOM') {
+            prefix = 'data:text/plain;charset=utf-8,%EF%BB%BF';
+        } else {
+            prefix = 'data:text/plain;charset=utf-8,';
+        }
         const element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('href', prefix + encodeURI(text));
         element.setAttribute('download', filename);
 
         element.style.display = 'none';

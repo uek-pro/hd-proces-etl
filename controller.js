@@ -80,42 +80,14 @@ const controller = {
         ) : this.setElementsVisibility(
             true,
             handles.loadProduct,
-        );
+            );
         this.view.clearReports();
     },
     saveAllReviews(type) {
-        if (type == 'json') {
-            DownloadHelper.download(this.model.productId + '.json', JSON.stringify(this.model.getProcessedData()));
-        } else if (type == 'csv') { // NOTE: brak polskich znaków
-
-            const data = this.model.getProcessedData();
-            let csvContent = '';//"data:text/csv;charset=utf-8,";
-            console.log(data);
-            for (let i = 0, k = data.length; i < k; i++) {
-                if (data[i] != null) {
-                    let row = (
-                        '"' + data[i].id + '","' +
-                        data[i].pros + '","' +
-                        data[i].cons + '","' +
-                        data[i].summary + '","' +
-                        data[i].starsCount + '","' +
-                        data[i].author + '","' +
-                        data[i].date + '","' +
-                        data[i].isRecommended + '","' +
-                        data[i].positiveVotesCount + '","' +
-                        data[i].negativeVotesCount + '"'
-                    );
-                    csvContent += row + "\r\n";
-                }
-            }
-            DownloadHelper.download(this.model.productId + '.csv', csvContent);
-        }
+        this.model.saveAllReviews(type);
     },
     saveReview(reviewId) {
-        const reviews = this.model.getProcessedData();
-        if (reviews[reviewId] != null) {
-            DownloadHelper.download(reviews[reviewId].id + '.json', JSON.stringify(reviews[reviewId]));
-        }
+        this.model.saveReview(reviewId);
     },
     deleteProductData(productId) {
         this.model.deleteProductData(productId);

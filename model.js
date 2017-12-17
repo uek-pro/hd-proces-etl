@@ -2,7 +2,6 @@ const model = {
     mode: Mode.CENEO,
     productId: -1,
     product: null,
-    reviews: null,
     pageCount: 1,
     rawData: [], // extraction
     processedData: [], // transformation
@@ -27,7 +26,7 @@ const model = {
                 controller.setElementsVisibility(true, handles.panelHandleArray[0]);
                 this.transform(true);
             } else {
-                controller.setElementsVisibility(true, handles.panelHandleArray[0], handles.transform);
+                controller.setElementsVisibility(true, handles.panelHandleArray[0], handles.transform, handles.back); // NOTE: hmm?
             }
             return;
         }
@@ -136,7 +135,6 @@ const model = {
     clear() {
         this.productId = -1;
         this.product = null;
-        this.reviews = null;
         this.pageCount = 1;
         this.rawData = [];
         this.processedData = [];
@@ -269,5 +267,45 @@ const model = {
                 controller.stopIndicator();
             }
         });
+    },
+    saveReview(reviewId) {
+        const reviews = this.getProcessedData();
+        if (reviews[reviewId] != null) {
+            DownloadHelper.download(reviews[reviewId].id + '.json', JSON.stringify(reviews[reviewId]));
+        }
+    },
+    saveAllReviews(type) {
+        if (type == 'json') {
+
+            const reviews = this.getProcessedData().filter(function (x) {
+                return (x !== null);//(x !== (undefined || null || ''));
+            });
+            DownloadHelper.download(this.productId + '.json', JSON.stringify(reviews));
+
+        } else if (type == 'csv') {
+
+            const data = this.getProcessedData();
+            console.log(data);
+
+            let csvContent = '';
+            for (let i = 0, k = data.length; i < k; i++) {
+                if (data[i] != null) {
+                    let row = (
+                        '"' + data[i].id + '","' +
+                        data[i].pros + '","' +
+                        data[i].cons + '","' +
+                        data[i].summary + '","' +
+                        data[i].starsCount + '","' +
+                        data[i].author + '","' +
+                        data[i].date + '","' +
+                        data[i].isRecommended + '","' +
+                        data[i].positiveVotesCount + '","' +
+                        data[i].negativeVotesCount + '"'
+                    );
+                    csvContent += row + "\r\n";
+                }
+            }
+            DownloadHelper.download(this.productId + '.csv', csvContent, 'utf8 w/ BOM');
+        }
     }
 }

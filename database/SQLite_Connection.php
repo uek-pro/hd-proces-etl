@@ -41,7 +41,7 @@ class SQLite_Connection implements IConnection {
             pros TEXT,
             cons TEXT,
             summary TEXT,
-            starsCount INTEGER,
+            starsCount REAL,
             author TEXT,
             date DATE,
             isRecommended BOOLEAN,
@@ -78,7 +78,7 @@ class SQLite_Connection implements IConnection {
             return false;
     }
 
-    public function insertReviewsIfNotExists($oReviews, $iProductId) {
+    public function insertReviewsIfNotExists($aReviews, $iProductId) {
         
         $query = $this->pdo->prepare(
             'INSERT INTO reviews VALUES (
@@ -98,19 +98,19 @@ class SQLite_Connection implements IConnection {
 
         $counter = 0;
 
-        for ($i = 0, $k = count($oReviews); $i < $k; $i++) {
+        for ($i = 0, $k = count($aReviews); $i < $k; $i++) {
 
-            $query->bindValue(':review_id', $oReviews[$i]->{'id'}, PDO::PARAM_INT);
+            $query->bindValue(':review_id', $aReviews[$i]->{'id'}, PDO::PARAM_INT);
             $query->bindValue(':product_id', $iProductId, PDO::PARAM_INT);
-            $query->bindValue(':pros', $oReviews[$i]->{'pros'}, PDO::PARAM_STR);
-            $query->bindValue(':cons', $oReviews[$i]->{'cons'}, PDO::PARAM_STR);
-            $query->bindValue(':summary', $oReviews[$i]->{'summary'}, PDO::PARAM_STR);
-            $query->bindValue(':stars_count', $oReviews[$i]->{'starsCount'}, PDO::PARAM_INT);
-            $query->bindValue(':author', $oReviews[$i]->{'author'}, PDO::PARAM_STR);
-            $query->bindValue(':date', $oReviews[$i]->{'date'}, PDO::PARAM_STR); //date?
-            $query->bindValue(':is_recommended', $oReviews[$i]->{'isRecommended'}, PDO::PARAM_STR); //bool?
-            $query->bindValue(':positive_votes_count', $oReviews[$i]->{'positiveVotesCount'}, PDO::PARAM_INT);
-            $query->bindValue(':negative_votes_count', $oReviews[$i]->{'negativeVotesCount'}, PDO::PARAM_INT);
+            $query->bindValue(':pros', $aReviews[$i]->{'pros'}, PDO::PARAM_STR);
+            $query->bindValue(':cons', $aReviews[$i]->{'cons'}, PDO::PARAM_STR);
+            $query->bindValue(':summary', $aReviews[$i]->{'summary'}, PDO::PARAM_STR);
+            $query->bindValue(':stars_count', $aReviews[$i]->{'starsCount'}, PDO::PARAM_STR);
+            $query->bindValue(':author', $aReviews[$i]->{'author'}, PDO::PARAM_STR);
+            $query->bindValue(':date', $aReviews[$i]->{'date'}, PDO::PARAM_STR);
+            $query->bindValue(':is_recommended', $aReviews[$i]->{'isRecommended'}, PDO::PARAM_INT);
+            $query->bindValue(':positive_votes_count', $aReviews[$i]->{'positiveVotesCount'}, PDO::PARAM_INT);
+            $query->bindValue(':negative_votes_count', $aReviews[$i]->{'negativeVotesCount'}, PDO::PARAM_INT);
 
             if ($query->execute())
                 $counter++;
