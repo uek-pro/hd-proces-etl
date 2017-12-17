@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Projekt. Proces ETL</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;subset=latin-ext">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="globals.js"></script>
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="head">
+            <div class="logo">
+                <a href="">
+                    <object class="logo" type="image/svg+xml" data="logo.svg">
+                        Logo
+                        <!-- fallback image in CSS -->
+                    </object>
+                </a>
+            </div>
+            <h1>Projekt. Proces ETL</h1>
+            <p>DMM 2017</p>
+        </div>
+        <div class="source">
+            <a href="https://github.com/uek-pro/hd-proces-etl">
+                <span>pokaż źródło aplikacji</span>
+                <img src="gh-icon.svg" width="26" alt="Źródło aplikacji" />
+            </a>
+        </div>
+    </div>
+
+    <div class="menu">
+        <span class="button active" id="url-menu">Pobieraj<br />z Ceneo</span>
+        <span class="button" id="database-menu">Pobieraj<br />z bazy danych</span>
+    </div>
+
+    <div class="main">
+
+        <div class="form" id="url-form">
+            <label for="product-code">Wprowadź kod produktu:</label>
+            <input id="product-code" type="number" value="43598443" />
+        </div>
+
+        <div class="form" id="database-form" style="display: none;">
+            <input id="update-products" type="button" value="Odśwież" />
+            <label for="select-product">Wybierz produkt z bazy:</label>
+            <select id="select-product"></select>
+        </div>
+        
+        <p id="message"></p>
+
+        <input id="etl" type="button" value="ETL" />
+        <input id="extract" type="button" value="Extract" />
+        <input id="load-product" type="button" value="Wczytaj" style="display: none;" />
+
+        <div class="processes">
+
+            <div class="panel" style="display: none;">
+                <div class="background">Extract</div>
+                <div class="report" id="extract-result"></div>
+            </div>
+
+            <input id="transform" type="button" value="Transform" style="display: none;" />
+
+            <div class="panel" style="display: none;">
+                <div class="background">Transform</div>
+                <div class="report" id="transform-result"></div>
+            </div>
+
+            <input id="load" type="button" value="Load" style="display: none;" />
+
+            <div class="panel" style="display: none;">
+                <div class="background">Load</div>
+                <div class="report" id="load-result"></div>
+            </div>
+
+            <input id="back" type="button" value="Powrót" style="display: none;" />
+        </div>
+
+        <div id="indicator"></div>
+    </div>
+
+    <script src="events.js"></script>
+</body>
+
+</html>
