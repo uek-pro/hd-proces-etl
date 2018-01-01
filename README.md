@@ -100,6 +100,12 @@ Metoda | Parametry | Wartość zwracana | Opis
 ------ | --------- | ---------------- | ----
 parseReview() | $(element) | Review | Metoda wyciągająca dane o pojedyńczej opinii z pojedyńczego elementu struktury (`ol.product-reviews > li.review-box`) na stronie internetowej.
 
+##### SearchResultParser
+
+Metoda | Parametry | Wartość zwracana | Opis
+------ | --------- | ---------------- | ----
+parsePage() | $(document) | obj[] | Metoda wyciągająca listę wyszukanych produktów ze struktury strony internetowej.
+
 ##### DownloadHelper
 
 Metoda | Parametry | Opis
@@ -125,6 +131,7 @@ load ||| Metoda przeprowadzająca proces LOAD.
 getProcessedData || this.processedData | Metoda zwracająca wartość pola processedData.
 isInitialState || bool | Metoda sprawdzająca czy aplikacja znajduje się w stanie wyjściowym.
 clear ||| Metoda przywracająca wartości pól do stanu początkowego
+searchProduct | phrase:string || Metoda wyszukująca produkty pasujące do frazy.
 getProductDataFromDatabase | productId:int || Metoda pobierająca informacje o produkcie z bazy danych.
 updateProductsFromDatabase ||| Metoda aktualizująca opcje w inpucie select.
 deleteProductData | productId:int || Metoda usuwająca wszystkie informacje o produkcie o podanym w parametrze identyfikatorze.
@@ -146,6 +153,8 @@ displayExtractReport | data:string[4] | Ustawia elementowi `#extract-result` kod
 displayLoadReport | data:string[3] | Ustawia elementowi `#load-result` kod HTML zawierający informacje statystyczne po operacji LOAD.
 clearReports || Usuwa zawartości elementów `#extract-result`, `#transform-result` i `#load-result`.
 fadeReview | elementId:int | Przyblednia opinię o przekazanym w parametrze identyfikatorze.
+displaySearchedProducts | searchedProducts:obj[] | Ustawia elementowi `#searched-products` kod HTML zawierający listę produktów podanych jako parametr.
+clearSearchedProducts || Usuwa zawartość elementu `#searched-products`.
 setElementActivity | isActive:bool, handle:$(element) | Ustawia, bądź usuwa klasę `active` elementowi podanemu w parametrze.
 setElementsVisibility | isVisible:bool, handles:$(element)[] | Odkrywa, bądź ukrywa wszystkie elementy podane w parametrze.
 
@@ -167,6 +176,10 @@ showExtractReport | data:string[] | Metoda wyświetlająca informacje statystycz
 showLoadReport | data:string[] | Metoda wyświetlająca informacje statystyczne po operacji LOAD.
 setElementsVisibility | isVisible:bool, ...handles:$(element) | Metoda wyświetlająca, bądź chowająca podane elementy aplikacji.
 changeMode | mode:Mode | Metoda ustawiająca UI w zależności od typu źródła danych.
+searchProduct | phrase:string | Metoda pobierająca listę produktów zawierących frazę podaną jako parametr.
+showSearchedProducts | searchedProducts:obj[] | Metoda wyświetlająca listę wyszukanych produktów.
+hideSearchedProducts || Metoda chowająca listę wyszukanych produktów
+setProductIdElementValue | value:int | Metoda ustawiająca wartość elementowi `#product-phrase`.
 updateProductsAsync || Metoda aktualizująca wybory pola wyboru produktu.
 startIndicator || Metoda włączająca animację indicatora.
 stopIndicator || Metoda zatrzymująca indicator.
@@ -209,6 +222,7 @@ $pdo | Instancja klasy PDO reprezentująca połącznie z bazą danych
 Funkcja | Parametry | Wartość zwracana | Opis
 ------- | --------- | ---------------- | ----
 getPage | $iItemId:int, $iReviewsPage:int=0 | string | Funkcja pobierająca stronę internetową serwisu ceneo, zawierającą informacje o danym produkcie oraz listę opinii na jego temat.
+getSearchedProductsPage | $sPhrase:string | string | Funkcja pobierająca stronę internetową serwisu ceneo, zawierającą listę wyszukanych produktów.
 showInformation | $sMessage:string, $bSuccess:bool, $sResult:any="" | array[] | Funkcja wyświetlająca informacje, w formie tablicy asocjacyjnej, na zapytanie do obsługi aplikacji.
 
 Skrypt obsługujący bazę danych oraz umożliwiający pobieranie zawartości stron z innych domen. Wszystkie zapytania przekazywane są metodą POST, a dodatkowe wartości zwracane są tablicą asocjacyjną, zawierającą elementy takie jak:
@@ -223,11 +237,16 @@ get-product-page | productId | Zapytanie o stronę o podanym, jako parametr, ide
 insert-product-data | productData | Zapytanie o zapis danych (produktu i jego opinii) w bazie danych. Pomyślne wykonanie zwraca, w formie tablicy asocjacyjnej, informacje o liczbie dodanych opinii i czy podany produkt znajdował się już w bazie danych. |
 get-product-data | productId | Zapytanie o wszystkie dane produktu o podanym w parametrze identyfikatorze. Pomyślne wykonanie zwraca, w formie tablicy asocjacyjnej, produkt, opinie na jego temat oraz ich liczbę.
 get-products-list || Zapytanie o pobranie danych (product_id, model) o wszystkich produktach.
-delete-product-data | productId || Zapytanie usuwające informacje o produkcie (wraz z opiniami na jego temat) o podanym identyfikatorze.
-delete-review | reviewId || Zapytanie usuwające opinię o podanym identyfikatorze.
+get-search-products | phrase | Zapytanie o listę produktów, wyszukanych za pomocą frazy podanej jako parametr
+delete-product-data | productId | Zapytanie usuwające informacje o produkcie (wraz z opiniami na jego temat) o podanym identyfikatorze.
+delete-review | reviewId | Zapytanie usuwające opinię o podanym identyfikatorze.
 
 ## Dokumentacja użytkownika
 
 ### Instrukcja instalacji aplikacji
+
+1. Klonujemy repozytorium
+1. Usuwamy folder docs oraz plik README.md (opcjonalnie)
+1. Kopiujemy zawartość repozytorium na serwer
 
 ### Instrukcja działania aplikacji

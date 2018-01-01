@@ -26,7 +26,7 @@ const model = {
                 controller.setElementsVisibility(true, handles.panelHandleArray[0]);
                 this.transform(true);
             } else {
-                controller.setElementsVisibility(true, handles.panelHandleArray[0], handles.transform, handles.back); // NOTE: hmm?
+                controller.setElementsVisibility(true, handles.panelHandleArray[0], handles.transform, handles.back);
             }
             return;
         }
@@ -52,7 +52,13 @@ const model = {
                         isValidProductId = false;
                     }
                     //console.log(isValidProductId, $.isNumeric(parent.product.id), parent.product.id);
-                    controller.showMessage(response.message + (!isValidProductId ? ', ale nie jest to produkt, lecz prawdopodobnie kategoria produktu.' : ''));
+                    controller.showMessage(
+                        response.message + (
+                            !isValidProductId ? (
+                                response.success ? ', ale nie jest to produkt, lecz prawdopodobnie kategoria produktu.' : ''
+                            ) : ''
+                        ) 
+                    );
                     setTimeout(
                         function () {
                             controller.hideMessage();
@@ -95,7 +101,7 @@ const model = {
                 this.processedData.push(review);
             }
         }
-        // NOTE: czy napewno zawsze pobrane zostają wszystkie opinie?
+        
         console.log(this.processedData);
         controller.showAllReviews(this.processedData, false);
 
@@ -138,6 +144,42 @@ const model = {
         this.pageCount = 1;
         this.rawData = [];
         this.processedData = [];
+    },
+    searchProduct(phrase) {
+        controller.startIndicator();
+        $.ajax({
+            url: 'http://localhost/web/hd-proces-etl/app_service.php',
+            method: 'post',
+            data: {
+                protocol: 'get-search-products',
+                phrase: encodeURI(phrase).replace(/%20/g, "+")
+            },
+            success: function (response) {
+                let success = response.success;
+                if (response.success) {
+
+                    const doc = new DOMParser().parseFromString(response.result, "text/html");
+                    const searchedProducts = SearchResultParser.parsePage(doc);
+                    if (searchedProducts.length == 0) {
+                        controller.showMessage('Brak wyników');
+                        setTimeout(
+                            function () {
+                                controller.hideMessage();
+                            },
+                            3000
+                        );
+                        success = false;
+                    }
+                    controller.showSearchedProducts(searchedProducts);
+                } 
+                
+                if (!success)
+                    controller.setElementsVisibility(true, handles.etl, handles.extract);
+            },
+            complete: function() {
+                controller.stopIndicator();
+            }
+        });
     },
     getProductDataFromDatabase(productId) {
         controller.startIndicator();

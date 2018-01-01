@@ -11,7 +11,7 @@ object {pointer-events: none;}
 .source a {color: #aaa;font-weight: 300;text-decoration: none;}
 .source img {margin-left: 4px;vertical-align: middle;}
 .logo {display: block;width: 188px;height: 190px;margin: 20px auto;}
-.head {padding-top: 10px;text-align: center;margin-bottom: 60px;}
+.head {padding-top: 10px;text-align: center;margin-bottom: 50px;}
 .head a {display: block;}
 .head > p {font-weight: 300;font-size: 0.85em;}
 .menu {text-align: center;}
@@ -27,9 +27,11 @@ input[type=button]:hover {background: #6a84ca;color: #fff;}
 #back {border-color:#dc143c;}
 #back:hover {background: #dc143c;}
 .form label {margin:0 0 3px 0;padding: 0;display: block;font-weight: 300;text-align: left;}
-.form input[type=number], select {box-sizing: border-box;border:1px solid #6a84ca;padding: 7px;margin: 0px;width: 100%;height: 34px;}
+.form input[type=text], select {box-sizing: border-box;border:1px solid #6a84ca;padding: 7px;margin: 0px;width: 100%;height: 34px;}
+#search-products {margin: 0;position: absolute;right: -108px;height: 34px;width: 102px;bottom: 0;}
 #update-products {margin: 0;position: absolute;left: -108px;height: 34px;width: 102px;bottom: 0;}
 .active {background-color: #000;color: #fff;pointer-events: none;}
+#searched-products > a{text-transform: uppercase;display:block;font-size:1.2em;}
 #message {height: 20px;font-weight: 300;color: #6a84ca;}
 dl {margin: 10px;padding: 20px;text-align: left;display: grid;grid-template-columns: max-content auto;position: relative;z-index: 1;}
 dt {font-weight: 600;grid-column-start: 1;}

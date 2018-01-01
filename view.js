@@ -64,6 +64,17 @@ const view = {
         $('#transform-result > dl:nth-child(' + (elementId+2) + ')').css("opacity", 0.2);
         // NOTE: element+2, ponieważ tablica jest liczona od 0, child od 1, a 1. child to informacje o produkcie
     },
+    displaySearchedProducts(searchedProducts) {
+        
+        for (let i = 0, k = searchedProducts.length; i < k; i++) {
+            $('#searched-products').append(
+                '<a onclick="controller.setProductIdElementValue(' + searchedProducts[i].id + ')">' + searchedProducts[i].name + '</a>'
+            );
+        }
+    },
+    clearSearchedProducts() {
+        $('#searched-products').empty();
+    },
     setElementActivity(isActive, handle) {
         isActive ? $(handle).addClass('active') : $(handle).removeClass('active');
     },

@@ -28,6 +28,7 @@ const controller = {
     },
     changeMode(mode) {
         this.model.mode = mode;
+        this.clearData();
         if (mode == Mode.CENEO) {
             this.view.setElementActivity(false, handles.databaseMenu);
             this.view.setElementActivity(true, handles.urlMenu);
@@ -39,6 +40,22 @@ const controller = {
             this.setElementsVisibility(false, handles.urlForm, handles.etl, handles.extract);
             this.setElementsVisibility(true, handles.databaseForm, handles.loadProduct);
         }
+    },
+    searchProduct(phrase) {
+        this.clearData();
+        this.setElementsVisibility(false, handles.etl, handles.extract);
+        this.model.searchProduct(phrase);
+    },
+    showSearchedProducts(searchedProducts) {
+        this.view.displaySearchedProducts(searchedProducts);
+    },
+    hideSearchedProducts() {
+        this.view.clearSearchedProducts();
+    },
+    setProductIdElementValue(value) {
+        this.hideSearchedProducts();
+        this.setElementsVisibility(true, handles.etl, handles.extract);
+        handles.productPhrase.value = value;
     },
     updateProductsAsync() {
         this.model.updateProductsFromDatabase();
@@ -64,6 +81,7 @@ const controller = {
     },
     clearData() {
         this.model.clear();
+        this.hideSearchedProducts();
         this.setElementsVisibility(
             false,
             handles.back,
@@ -80,7 +98,7 @@ const controller = {
         ) : this.setElementsVisibility(
             true,
             handles.loadProduct,
-            );
+        );
         this.view.clearReports();
     },
     saveAllReviews(type) {

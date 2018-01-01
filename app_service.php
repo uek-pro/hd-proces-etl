@@ -70,6 +70,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = showInformation("Wystąpił błąd podczas pobierania produktów", false);
             }
 
+        } else if ($_POST['protocol'] == 'get-search-products') {
+                
+            require_once 'database\SQLite_Connection.php';
+            $database = SQLite_Connection::prepareDatabase();
+
+            if (isset($_POST['phrase'])) {
+
+                $content = getSearchedProductsPage($_POST['phrase']);
+                if ($content != "" ) {
+                    $response = showInformation("Wykonano pomyślnie", true, $content);
+                } else {
+                    $response = showInformation("Coś poszło nie tak", false);
+                }
+
+            } else {
+                $response = showInformation("Proszę podać frazę, po której będą szukane produkty", false);
+            }
+
         } else if ($_POST['protocol'] == 'delete-product-data') {
             
             if (isset($_POST['productId']) && ctype_digit($_POST['productId'])) {
@@ -117,6 +135,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function getPage($iItemId, $iReviewsPage = 0) {
     try {
         $content = @file_get_contents("https://www.ceneo.pl/" . $_POST['productId'] . ($iReviewsPage > 1 ? "/opinie-" . $iReviewsPage : ""));
+        
+        if ($content === false) {
+            return "";
+        }
+
+        return $content;
+
+    } catch (Exception $e) {
+        return "";
+    }
+}
+
+function getSearchedProductsPage($sPhrase) {
+    try {
+        $content = @file_get_contents("https://www.ceneo.pl/;szukaj-" . $sPhrase);
         
         if ($content === false) {
             return "";

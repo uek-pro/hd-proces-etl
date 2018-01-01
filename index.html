@@ -47,8 +47,9 @@
     <div class="main">
 
         <div class="form" id="url-form">
-            <label for="product-code">Wprowadź kod produktu:</label>
-            <input id="product-code" type="number" value="43598443" />
+            <input id="search-products" type="button" value="Szukaj" />
+            <label for="product-phrase">Wprowadź kod produktu lub frazę..:</label>
+            <input id="product-phrase" type="text" value="43598443" />
         </div>
 
         <div class="form" id="database-form" style="display: none;">
@@ -57,6 +58,8 @@
             <select id="select-product"></select>
         </div>
         
+        <div id="searched-products"></div>
+
         <p id="message"></p>
 
         <input id="etl" type="button" value="ETL" />

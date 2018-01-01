@@ -89,7 +89,7 @@ const ReviewsParser = {
             review.querySelector('button.vote-yes').attributes['data-review-id'].textContent,
             pros,
             cons,
-            review.querySelector('p.product-review-body').textContent.slice(0, 200), // NOTE: tymczasowo
+            review.querySelector('p.product-review-body').textContent,//.slice(0, 200)
             starsCount,
             review.querySelector('div.reviewer-name-line').textContent.trim(),
             review.querySelector('span.review-time > time').attributes['datetime'].textContent,
@@ -97,6 +97,22 @@ const ReviewsParser = {
             review.querySelector('button.vote-yes').textContent,
             review.querySelector('button.vote-no').textContent
         );
+    }
+}
+
+const SearchResultParser = {
+    parsePage: function (doc) {
+        let productsArray = [];
+        const searchedProducts = doc.querySelectorAll('div.category-list-body.js_category-list-body > div.cat-prod-row');
+        if (searchedProducts.length > 0) {
+            for (let i = 0, k = searchedProducts.length; i < k; i++) {
+                if (i > 9) break; // NOTE: wyświetla tylko 10 wyników
+                let productId = searchedProducts[i].attributes['data-pid'].textContent;
+                let productName = searchedProducts[i].querySelector('strong.cat-prod-row-name > a').textContent;
+                productsArray.push({id: productId, name: productName});
+            }
+        }
+        return productsArray;
     }
 }
 
