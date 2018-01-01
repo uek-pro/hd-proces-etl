@@ -19,6 +19,7 @@ const model = {
 
         const parent = this;
         if (counter > parent.pageCount) {
+            controller.hideMessage();
             console.log(this.rawData);
             controller.showExtractReport([parent.productId, parent.product.reviewsCount, parent.pageCount, isWholeProcess]);
             controller.stopIndicator();
@@ -51,27 +52,25 @@ const model = {
                     if (!$.isNumeric(parent.product.id)) {
                         isValidProductId = false;
                     }
-                    //console.log(isValidProductId, $.isNumeric(parent.product.id), parent.product.id);
-                    controller.showMessage(
-                        response.message + (
-                            !isValidProductId ? (
-                                response.success ? ', ale nie jest to produkt, lecz prawdopodobnie kategoria produktu.' : ''
-                            ) : ''
-                        ) 
-                    );
-                    setTimeout(
-                        function () {
-                            controller.hideMessage();
-                        },
-                        5000
-                    );
 
                     if (!isValidProductId) {
+                        controller.showMessage(
+                            response.message + (
+                                response.success ? ', ale nie jest to produkt, lecz prawdopodobnie kategoria produktu.' : ''
+                            ) 
+                        );
+                        setTimeout(
+                            function () {
+                                controller.hideMessage();
+                            },
+                            5000
+                        );
                         controller.stopIndicator();
                         controller.setElementsVisibility(true, handles.extract, handles.etl);
                         return;
                     }
                 }
+                controller.showMessage(Math.floor((counter / parent.pageCount) * 100) + '%');                
 
                 parent.rawData.push(response.result);
                 parent.extract(productId, isWholeProcess, counter + 1);
